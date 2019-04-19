@@ -1,12 +1,5 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Phalcon template
-/cache/
-/config/development/
-### Example user template
-
-# IntelliJ project files
 .idea
-*.iml
+.phalcon
 .gitignore
 .htaccess
 .htrouter.php
@@ -16,8 +9,5 @@
 .idea/php.xml
 .idea/workspace.xml
 .phalcon/
-app/migrations/
-app/views/layouts/
-public/files/
-public/img/
-public/temp/
+node_modules
+vendor
