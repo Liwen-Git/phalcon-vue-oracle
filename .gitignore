@@ -11,3 +11,4 @@
 .phalcon/
 node_modules
 vendor
+/cache
