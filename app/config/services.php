@@ -1,5 +1,6 @@
 <?php
 
+use Phalcon\Events\Event;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\View\Engine\Php as PhpEngine;
 use Phalcon\Mvc\Url as UrlResolver;
@@ -9,6 +10,10 @@ use Phalcon\Session\Adapter\Files as SessionAdapter;
 use Phalcon\Flash\Direct as Flash;
 use Phalcon\Mvc\Dispatcher;
 use App\Library\PhalconBaseVolt;
+use Phalcon\Events\Manager;
+use Phalcon\Mvc\Dispatcher\Exception as DispatchException;
+use App\Library\Common;
+use Phalcon\Http\Request;
 
 /**
  * Shared configuration service
@@ -116,7 +121,24 @@ $di->setShared('session', function () {
 });
 
 $di->set('dispatcher', function () {
+    $eventManager = new Manager();
+    $eventManager->attach('dispatch:beforeException', function (Event $event, $dispatcher, Exception $exception) {
+        if ($exception instanceof DispatchException) {
+            $request = new Request();
+            $url = $request->getURI();
+            if( Common::startsWith($url, '/admin')){
+                $dispatcher->forward([
+                    'controller' => 'admin',
+                    'action' => 'index',
+                    'params' => ['_from' => $url],
+                ]);
+                return false;
+            }
+        }
+    });
+
     $dispatcher = new Dispatcher();
+    $dispatcher->setEventsManager($eventManager);
     $dispatcher->setDefaultNamespace('App\Controllers');
     return $dispatcher;
 });
