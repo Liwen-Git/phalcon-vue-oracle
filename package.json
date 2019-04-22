@@ -28,6 +28,8 @@
         "vuex": "^3.0.1"
     },
     "dependencies": {
-        "element-ui": "^2.7.2"
+        "element-ui": "^2.7.2",
+        "js-cookie": "^2.2.0",
+        "moment": "^2.24.0"
     }
 }
