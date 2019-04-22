@@ -7,17 +7,15 @@ import Vue from 'vue';
 window.Vue = Vue;
 
 /**
- * 引入element-ui组件 和 样式
+ * 引入element-ui组件 和 [样式: import 'element-ui/lib/theme-chalk/index.css'; 在webpack.mix.js中引入css]
  */
 import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
 /**
- * web 进度条
+ * web 进度条 [css: import 'nprogress/nprogress.css'; 在webpack.mix.js中引入]
  */
 import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
 
 /**
  * 引入vue-router路由组件，同时配置路由 并引入自己的路由

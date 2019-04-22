@@ -15,7 +15,12 @@ mix.setPublicPath('public');
 
 mix.js('./resources/admin/app.js', 'public/js/admin.js');
 
-mix.styles(['node_modules/element-ui/lib/theme-chalk/index.css'], 'public/css/all.css');
+mix.styles([
+    'node_modules/element-ui/lib/theme-chalk/index.css', // element-ui 的css样式
+    'node_modules/nprogress/nprogress.css', // 进度条的css样式
+    'resources/assets/css/base.css', // 通用样式
+    'resources/assets/css/global.css', // 通用样式
+], 'public/css/all.css');
 
 mix.copy('node_modules/element-ui/lib/theme-chalk/fonts', 'public/css/fonts/');
 

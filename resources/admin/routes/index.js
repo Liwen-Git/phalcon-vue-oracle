@@ -1,8 +1,17 @@
 import Example from '../components/example';
-import Test from '../components/test';
+
+import Login from '../components/login';
+import Home from '../components/home';
 
 const routes = [
-    {path: '/example', component: Example, name: 'Example'},
-    {path: '/test', component: Test, name: 'Test'},
+    {path: '/login', component: Login, name: 'Login'},
+
+    {
+        path: '/',
+        component: Home,
+        children: [
+            {path: 'example', component: Example, name: 'Example'},
+        ]
+    }
 ];
 export default routes;

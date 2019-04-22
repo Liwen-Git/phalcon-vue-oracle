@@ -10,7 +10,7 @@
         name: "example",
         methods: {
             goTest() {
-                router.push('/test');
+                router.push('/login');
             }
         }
     }

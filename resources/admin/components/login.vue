@@ -1,14 +1,12 @@
 <template>
-    <div class="testClass">
-        <el-col>
-            test
-        </el-col>
+    <div>
+        login
     </div>
 </template>
 
 <script>
     export default {
-        name: "test"
+        name: "login"
     }
 </script>
 
