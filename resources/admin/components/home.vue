@@ -1,5 +1,6 @@
 <template>
     <el-container class="container">
+        <!-- 页面头部 -->
         <el-header class="header">
             <el-container class="header-container">
                 <el-aside class="header-aside">
@@ -19,27 +20,60 @@
                 </el-main>
             </el-container>
         </el-header>
+        <!-- 下部分 -->
         <el-container>
-            <el-main>
-                <router-view></router-view>
+            <!-- 左部分 菜单列表 -->
+            <left-menu :menus="menus"></left-menu>
+            <!-- 主页面 内容部分 -->
+            <el-main class="main-content">
+                <el-col :span="24">
+                    <transition name="fade" mode="out-in" appear>
+                        <router-view></router-view>
+                    </transition>
+                </el-col>
             </el-main>
         </el-container>
     </el-container>
 </template>
 
 <script>
+    import LeftMenu from '../../assets/components/left_menu';
+
     export default {
         name: "home",
         data() {
             return {
                 logo: '后台管理系统',
                 userName: 'userName',
+                menus: [
+                    {
+                        name: 'The 1',
+                        url: '/',
+                        sub: [
+                            {
+                                name: 'The 1-1',
+                                url: '/login',
+                            },
+                            {
+                                name: 'The 1-2',
+                                url: '',
+                            }
+                        ]
+                    },
+                    {
+                        name: 'The 2',
+                        url: '/login',
+                    }
+                ],
             }
         },
         methods: {
             handleCommand(command) {
 
             }
+        },
+        components: {
+            LeftMenu,
         }
     }
 </script>
@@ -87,5 +121,9 @@
 
     .el-icon-arrow-down {
         font-size: 12px;
+    }
+
+    .main-content {
+        overflow-y: scroll;
     }
 </style>
