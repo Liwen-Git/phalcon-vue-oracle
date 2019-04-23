@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <page title="example" :breadcrumbs="{首页: '/login'}">
         <div>hello vue</div>
         <el-button @click="goTest">点击</el-button>
-    </div>
+    </page>
 </template>
 
 <script>

@@ -42,6 +42,12 @@ window.router = router;
 Vue.use(VueRouter);
 
 /**
+ * 引入自定义全局组件 Page => 主要包含 面包屑
+ */
+import Page from './components/page';
+Vue.component('Page', Page);
+
+/**
  * Vue函数创建Vue实例
  */
 import App from './App.vue';
