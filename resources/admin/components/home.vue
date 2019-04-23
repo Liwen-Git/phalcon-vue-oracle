@@ -4,9 +4,19 @@
             <el-container class="header-container">
                 <el-aside class="header-aside">
                     <div class="header-logo fl">
-                        <div>后台管理系统</div>
+                        <div class="logo-font">{{logo}}</div>
                     </div>
                 </el-aside>
+                <el-main>
+                    <el-dropdown class="fr" @command="handleCommand">
+                        <span class="el-dropdown-link">
+                            {{userName}} <i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="logout">退出</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </el-main>
             </el-container>
         </el-header>
         <el-container>
@@ -19,7 +29,18 @@
 
 <script>
     export default {
-        name: "home"
+        name: "home",
+        data() {
+            return {
+                logo: '后台管理系统',
+                userName: 'userName',
+            }
+        },
+        methods: {
+            handleCommand(command) {
+
+            }
+        }
     }
 </script>
 
@@ -31,6 +52,7 @@
     .header {
         padding: 0;
         border-bottom: solid 1px #e6e6e6;
+        background-color: #409EFF;
     }
 
     .header-container {
@@ -51,5 +73,19 @@
         display: flex;  /* 垂直居中[这三条] */
         justify-content:center;
         align-items:Center;
+    }
+
+    .logo-font {
+        font-size: large;
+        font-weight: bold;
+    }
+
+    .el-dropdown-link {
+        cursor: pointer;
+        color: #e6e6e6;
+    }
+
+    .el-icon-arrow-down {
+        font-size: 12px;
     }
 </style>
