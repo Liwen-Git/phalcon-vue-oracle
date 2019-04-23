@@ -28,7 +28,7 @@
             <el-main class="main-content">
                 <el-col :span="24">
                     <transition name="fade" mode="out-in" appear>
-                        <router-view></router-view>
+                        <router-view v-loading="globalLoading"></router-view>
                     </transition>
                 </el-col>
             </el-main>
@@ -38,6 +38,7 @@
 
 <script>
     import LeftMenu from '../../assets/components/left_menu';
+    import {mapState} from 'vuex';
 
     export default {
         name: "home",
@@ -71,6 +72,14 @@
             handleCommand(command) {
 
             }
+        },
+        created() {
+            console.log(this.$store.state.globalLoading);
+        },
+        computed: {
+            ...mapState([
+                'globalLoading',
+            ]),
         },
         components: {
             LeftMenu,

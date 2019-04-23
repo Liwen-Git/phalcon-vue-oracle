@@ -34,7 +34,7 @@
         },
         methods: {
             toPath(path) {
-                router.push(path);
+                this.$router.push(path);
             }
         }
     }

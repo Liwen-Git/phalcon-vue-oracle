@@ -29,17 +29,25 @@ const router = new VueRouter({
 });
 // 注册一个全局前置守卫
 router.beforeEach((to, from, next) => {
+    // home.vue 中的内容部分页面全局loading
+    store.dispatch('openGlobalLoading');
     NProgress.start();
     console.log('to', to);
     next();
 });
 // 全局后置钩子
 router.afterEach(() => {
+    store.dispatch('closeGlobalLoading');
     NProgress.done();
 });
-// 把vue-router赋值给window全局变量router
+// 把vue-router赋值给window全局变量router [也可以使用this.$router调用]
 window.router = router;
 Vue.use(VueRouter);
+
+/**
+ * 引入 vuex 集中式管理组件状态 [在页面中使用this.$store调用]
+ */
+import store from './store';
 
 /**
  * 引入自定义全局组件 Page => 主要包含 面包屑
@@ -55,5 +63,6 @@ new Vue({
     el: '#app',
     template: '<App/>',
     router,
+    store,
     components: {App}
 }).$mount('#app');
