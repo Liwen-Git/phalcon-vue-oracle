@@ -14,6 +14,7 @@ use Phalcon\Events\Manager;
 use Phalcon\Mvc\Dispatcher\Exception as DispatchException;
 use App\Library\Common;
 use Phalcon\Http\Request;
+use Phalcon\Session\Adapter\Redis as RedisSession;
 
 /**
  * Shared configuration service
@@ -137,12 +138,25 @@ $di->set('flash', function () {
  * Start the session the first time some component request the session service
  */
 $di->setShared('session', function () {
-    $session = new SessionAdapter();
+    // 注释文件类型session
+//    $session = new SessionAdapter();
+
+    // 启用redis类型的session
+    $config = $this->getConfig();
+    $session = new RedisSession([
+        'host' => $config->redis->host,
+        'port' => $config->redis->port,
+        'password' => $config->redis->password,
+    ]);
+
     $session->start();
 
     return $session;
 });
 
+/**
+ * 调度控制器 并在其中植入事件管理器
+ */
 $di->set('dispatcher', function () {
     $eventManager = new Manager();
     $eventManager->attach('dispatch:beforeException', function (Event $event, $dispatcher, Exception $exception) {
@@ -164,4 +178,16 @@ $di->set('dispatcher', function () {
     $dispatcher->setEventsManager($eventManager);
     $dispatcher->setDefaultNamespace('App\Controllers');
     return $dispatcher;
+});
+
+/**
+ * 注册redis服务到服务容器
+ */
+$di->setShared('redis', function () {
+    $config = $this->getConfig();
+    $redis = new Redis();
+    $redis->connect($config->redis->host, $config->redis->port);
+    $redis->auth($config->redis->password);
+    $redis->setOption(Redis::OPT_PREFIX, 'accounting-system:');
+    return $redis;
 });
