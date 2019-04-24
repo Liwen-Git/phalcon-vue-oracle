@@ -10,8 +10,16 @@
         name: "example",
         methods: {
             goTest() {
-                router.push('/login');
+                this.$router.push('/login');
+            },
+            test() {
+                api.post('/login/login').then(res => {
+                    console.log(res);
+                })
             }
+        },
+        created() {
+            this.test();
         }
     }
 </script>

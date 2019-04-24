@@ -159,10 +159,12 @@ $di->setShared('session', function () {
  */
 $di->set('dispatcher', function () {
     $eventManager = new Manager();
-    $eventManager->attach('dispatch:beforeException', function (Event $event, $dispatcher, Exception $exception) {
+
+    $request = new Request();
+    $url = $request->getURI();
+
+    $eventManager->attach('dispatch:beforeException', function (Event $event, $dispatcher, Exception $exception) use ($url) {
         if ($exception instanceof DispatchException) {
-            $request = new Request();
-            $url = $request->getURI();
             if( Common::startsWith($url, '/admin')){
                 $dispatcher->forward([
                     'controller' => 'admin',

@@ -25,7 +25,7 @@ window.Lockr = Lockr;
 Lockr.prefix = 'admin_';
 
 /**
- * 引入 axios; 一个基于 promise 的 HTTP 库
+ * 引入 axios; 一个基于 promise 的 HTTP 库 [这个axios在assets/js/api.js中封装了一个api，这里的axios没用到]
  */
 import axios from 'axios';
 window.axios = axios;

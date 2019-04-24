@@ -45,7 +45,7 @@ window.router = router;
 Vue.use(VueRouter);
 
 /**
- * 引入 vuex 集中式管理组件状态 [在页面中使用this.$store调用]
+ * 引入 vuex 集中式管理组件状态 [在页面中使用this.$store调用,因为实例Vue的时候引入了]
  */
 import store from './store';
 
@@ -54,6 +54,13 @@ import store from './store';
  */
 import Page from './components/page';
 Vue.component('Page', Page);
+
+/**
+ * 引入请求api
+ */
+window.baseApiUrl = '/';
+import api from '../assets/js/api';
+window.api = api;
 
 /**
  * Vue函数创建Vue实例
