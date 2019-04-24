@@ -69,7 +69,7 @@ $di->setShared('view', function () {
 /**
  * Database connection is created based in the parameters defined in the configuration file
  */
-$di->setShared('db', function () {
+$di->setShared('db_acc', function () {
     $config = $this->getConfig();
 
     $class = 'Phalcon\Db\Adapter\Pdo\\' . $config->database->adapter;
@@ -82,6 +82,29 @@ $di->setShared('db', function () {
     ];
 
     if ($config->database->adapter == 'Postgresql') {
+        unset($params['charset']);
+    }
+
+    $connection = new $class($params);
+
+    return $connection;
+});
+/**
+ * 设置多数据库
+ */
+$di->setShared('db_crm', function () {
+    $config = $this->getConfig();
+
+    $class = 'Phalcon\Db\Adapter\Pdo\\' . $config->database1->adapter;
+    $params = [
+        'host'     => $config->database1->host,
+        'username' => $config->database1->username,
+        'password' => $config->database1->password,
+        'dbname'   => $config->database1->dbname,
+        'charset'  => $config->database1->charset
+    ];
+
+    if ($config->database1->adapter == 'Postgresql') {
         unset($params['charset']);
     }
 

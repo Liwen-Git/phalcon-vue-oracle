@@ -1,11 +1,9 @@
 <?php
 namespace App\Controllers;
 
-use App\Library\Common;
 use App\Models\Test;
-use App\Models\User;
 
-class IndexController extends ControllerBase
+class TestController extends ControllerBase
 {
     public function indexAction()
     {
@@ -15,7 +13,7 @@ class IndexController extends ControllerBase
     public function testAction()
     {
         $this->view->disable();
-        $test = new Test();
+        $test = Test::find();
         var_dump($test->toArray());
     }
 

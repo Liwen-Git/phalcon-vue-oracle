@@ -29,7 +29,8 @@ class Test extends Model
      */
     public function initialize()
     {
-        $this->setSchema("acc_user");
+        $this->setConnectionService('db_crm');
+        $this->setSchema("crm_user");
         $this->setSource("t_users");
     }
 

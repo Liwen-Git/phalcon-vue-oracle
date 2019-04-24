@@ -74,7 +74,7 @@
             }
         },
         created() {
-            console.log(this.$store.state.globalLoading);
+            // console.log(this.$store.state.globalLoading);
         },
         computed: {
             ...mapState([
