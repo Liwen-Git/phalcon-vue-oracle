@@ -13,10 +13,10 @@ class TestController extends ControllerBase
     public function testAction()
     {
         $this->view->disable();
-        $session = $this->session->set('liwen', 'cool');
-        var_dump($this->session->get('liwen'));
-//        $test = Test::find();
-//        var_dump($test->toArray());
+//        $session = $this->session->set('liwen', 'cool');
+//        var_dump($this->session->get('liwen'));
+        $test = Test::findFirst(['account' => 'admin']);
+        var_dump($test->toArray());
     }
 
 }

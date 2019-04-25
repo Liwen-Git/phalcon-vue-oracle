@@ -57,6 +57,7 @@ try {
         }
     });
 
+    $GLOBALS['ssid'] = $di->getShared("session")->getID();
     /**
      * Handle the request
      */

@@ -15,6 +15,9 @@ use Phalcon\Mvc\Dispatcher\Exception as DispatchException;
 use App\Library\Common;
 use Phalcon\Http\Request;
 use Phalcon\Session\Adapter\Redis as RedisSession;
+use Phalcon\Logger\Adapter\File as LogFile;
+use Phalcon\Logger\Formatter\Line as LogLine;
+use Phalcon\Db\Profiler as DbProfiler;
 
 /**
  * Shared configuration service
@@ -87,6 +90,26 @@ $di->setShared('db_acc', function () {
     }
 
     $connection = new $class($params);
+    $eventManager = new Manager();
+    $profiler = new DbProfiler();
+    $eventManager->attach('db', function ($event, $connection) use ($profiler) {
+        if($event->getType() == 'beforeQuery'){
+            //在sql发送到数据库前启动分析
+            $profiler -> startProfile($connection->getSQLStatement());
+        }
+        if($event -> getType() == 'afterQuery'){
+            //在sql执行完毕后停止分析
+            $profiler -> stopProfile();
+            //获取分析结果
+            $profile = $profiler -> getLastProfile();
+            $sql = $profile->getSQLStatement();
+            $executeTime = $profile->getTotalElapsedSeconds();
+            //日志记录
+            $this->getLog()->info('db_acc执行sql:'. $sql);
+            $this->getLog()->info('执行时间:'. $executeTime);
+        }
+    });
+    $connection->setEventsManager($eventManager);
 
     return $connection;
 });
@@ -110,6 +133,26 @@ $di->setShared('db_crm', function () {
     }
 
     $connection = new $class($params);
+    $eventManager = new Manager();
+    $profiler = new DbProfiler();
+    $eventManager->attach('db', function ($event, $connection) use ($profiler) {
+        if($event->getType() == 'beforeQuery'){
+            //在sql发送到数据库前启动分析
+            $profiler -> startProfile($connection->getSQLStatement());
+        }
+        if($event -> getType() == 'afterQuery'){
+            //在sql执行完毕后停止分析
+            $profiler -> stopProfile();
+            //获取分析结果
+            $profile = $profiler -> getLastProfile();
+            $sql = $profile->getSQLStatement();
+            $executeTime = $profile->getTotalElapsedSeconds();
+            //日志记录
+            $this->getLog()->info('db_crm执行sql:'. $sql);
+            $this->getLog()->info('执行时间:'. $executeTime);
+        }
+    });
+    $connection->setEventsManager($eventManager);
 
     return $connection;
 });
@@ -192,4 +235,19 @@ $di->setShared('redis', function () {
     $redis->auth($config->redis->password);
     $redis->setOption(Redis::OPT_PREFIX, 'accounting-system:');
     return $redis;
+});
+
+/**
+ * 注册日志服务
+ */
+$di->setShared('log', function() {
+    $config = $this->getConfig();
+    if(!is_dir($config->application->logDir)){
+        mkdir($config->application->logDir,'0755',true);
+    }
+    $log = new LogFile($config->application->logDir. date('Y-m-d') . '.log');
+    $formatter = new LogLine("[%date%][".$GLOBALS['ssid']."][%type%] %message%");
+    $formatter->setDateFormat("Y/m/d H:i:s");
+    $log->setFormatter($formatter);
+    return $log;
 });
