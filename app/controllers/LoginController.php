@@ -4,7 +4,6 @@
 namespace App\Controllers;
 
 use App\Library\Result;
-use App\Library\ResultCode;
 use App\Service\UserService;
 
 class LoginController extends ControllerBase
@@ -17,6 +16,6 @@ class LoginController extends ControllerBase
 
         $user = UserService::checkPasswordByAccount($account, $password);
 
-        return Result::success($user);
+        Result::success($user);
     }
 }

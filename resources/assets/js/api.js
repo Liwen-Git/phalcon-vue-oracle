@@ -39,6 +39,9 @@ function handleError(error) {
                     break;
                 default:
                     console.log('接口返回错误信息:', res);
+                    if(!res.disableErrorMessage){
+                        Message.error(res.message)
+                    }
                     break;
             }
         } else {

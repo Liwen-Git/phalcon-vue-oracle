@@ -17,7 +17,7 @@ $loader->registerNamespaces([
     'App\Controllers' => APP_PATH . '/controllers/',
     'App\Models'      => APP_PATH . '/models/',
     'App\Library'     => APP_PATH . '/library/',
-    'App\Service'     => APP_PATH . '/service',
+    'App\Service'     => APP_PATH . '/service/',
     'Phalcon'         => BASE_PATH .'/vendor/phalcon/incubator/Library/Phalcon/'
 ]);
 

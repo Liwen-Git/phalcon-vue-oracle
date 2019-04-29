@@ -5,6 +5,10 @@ error_reporting(E_ALL);
 
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/app');
+/**
+ * 设置时区
+ */
+date_default_timezone_set('Asia/Shanghai');
 
 try {
     /**

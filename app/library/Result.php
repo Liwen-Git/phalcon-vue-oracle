@@ -19,7 +19,7 @@ class Result
             $data = $message;
             $message = '请求成功';
         }
-        return self::getJson(ResultCode::SUCCESS, $message, $data);
+        self::getJson(ResultCode::SUCCESS, $message, $data)->send();
     }
 
     /**
@@ -28,9 +28,10 @@ class Result
      * @param $message
      * @param array $data
      */
-    public static function error($code, $message, $data = [])
+    public static function error($code = 500, $message = '未知错误', $data = [])
     {
-        return self::getJson($code, $message, $data);
+        self::getJson($code, $message, $data)->send();
+        exit;
     }
 
     /**
@@ -38,6 +39,7 @@ class Result
      * @param $code
      * @param $message
      * @param $data
+     * @return Response
      */
     public static function getJson($code, $message, $data)
     {
@@ -48,6 +50,6 @@ class Result
             'data' => $data,
             'timestamp' => time(),
         ]);
-        return $response->send();
+        return $response;
     }
 }

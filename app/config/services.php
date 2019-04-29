@@ -103,9 +103,11 @@ $di->setShared('db_acc', function () {
             //获取分析结果
             $profile = $profiler -> getLastProfile();
             $sql = $profile->getSQLStatement();
+            $params = $connection->getSqlVariables();
+            (is_array($params) && count($params)) && $params = json_encode($params);
             $executeTime = $profile->getTotalElapsedSeconds();
             //日志记录
-            $this->getLog()->info('db_acc执行sql:'. $sql);
+            $this->getLog()->info('db_crm执行sql:'. $sql . PHP_EOL .'参数:' . $params);
             $this->getLog()->info('执行时间:'. $executeTime);
         }
     });
@@ -146,9 +148,11 @@ $di->setShared('db_crm', function () {
             //获取分析结果
             $profile = $profiler -> getLastProfile();
             $sql = $profile->getSQLStatement();
+            $params = $connection->getSqlVariables();
+            (is_array($params) && count($params)) && $params = json_encode($params);
             $executeTime = $profile->getTotalElapsedSeconds();
             //日志记录
-            $this->getLog()->info('db_crm执行sql:'. $sql);
+            $this->getLog()->info('db_crm执行sql:'. $sql . PHP_EOL .'参数:' . $params);
             $this->getLog()->info('执行时间:'. $executeTime);
         }
     });
