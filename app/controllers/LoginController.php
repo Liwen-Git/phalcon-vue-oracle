@@ -14,8 +14,11 @@ class LoginController extends ControllerBase
         $account = $post['account'];
         $password = $post['password'];
 
-        $user = UserService::checkPasswordByAccount($account, $password);
+        $userService = new UserService();
+        $user = $userService->checkPasswordByAccount($account, $password);
 
-        Result::success($user);
+        $menuAndRules = $userService->getUserMenuAndRules($user);
+
+        Result::success($menuAndRules);
     }
 }

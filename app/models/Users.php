@@ -21,4 +21,24 @@ class Users extends Model
     {
         return 't_users';
     }
+
+    public function columnMap()
+    {
+        return [
+            'USER_ID'          => 'user_id',
+            'ACCOUNT'          => 'account',
+            'NAME'             => 'name',
+            'PASSWORD'         => 'password',
+            'PHONE'            => 'phone',
+            'STATUS'           => 'status',
+            'LASTUPTNAME'      => 'lastuptname',
+            'LASTUPTTIME'      => 'lastupttime',
+            'LASTLOGINTIME'    => 'lastlogintime',
+            'COUNT_LOGIN'      => 'count_login',
+            'LAST_LOGIN_IP'    => 'last_login_ip',
+            'PWD_ERR_NUM'      => 'pwd_err_num',
+            'LOGIN_ERR_DATE'   => 'login_err_date',
+            'PWD_UPDATE_DATE'  => 'pwd_update_date',
+        ];
+    }
 }

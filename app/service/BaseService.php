@@ -1,10 +1,10 @@
 <?php
 
-
 namespace App\Service;
 
+use Phalcon\Di\Injectable;
 
-class BaseService
+class BaseService extends Injectable
 {
 
 }
