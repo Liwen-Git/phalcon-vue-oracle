@@ -11,7 +11,7 @@
                 <el-main>
                     <el-dropdown class="fr" @command="handleCommand">
                         <span class="el-dropdown-link">
-                            {{userName}} <i class="el-icon-arrow-down el-icon--right"></i>
+                            {{user.account}} <i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item command="logout">退出</el-dropdown-item>
@@ -45,27 +45,6 @@
         data() {
             return {
                 logo: '后台管理系统',
-                userName: 'userName',
-                menus: [
-                    {
-                        name: 'The 1',
-                        url: '/',
-                        sub: [
-                            {
-                                name: 'The 1-1',
-                                url: '/login',
-                            },
-                            {
-                                name: 'The 1-2',
-                                url: '',
-                            }
-                        ]
-                    },
-                    {
-                        name: 'The 2',
-                        url: '/login',
-                    }
-                ],
             }
         },
         methods: {
@@ -74,11 +53,14 @@
             }
         },
         created() {
-            // console.log(this.$store.state.globalLoading);
+            console.log(this.user);
         },
         computed: {
             ...mapState([
                 'globalLoading',
+                'user',
+                'menus',
+                'rules',
             ]),
         },
         components: {

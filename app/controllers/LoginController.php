@@ -19,6 +19,10 @@ class LoginController extends ControllerBase
 
         $menuAndRules = $userService->getUserMenuAndRules($user);
 
-        Result::success($menuAndRules);
+        Result::success([
+            'user'  => $user,
+            'menus' => $menuAndRules['menuArray'],
+            'rules' => $menuAndRules['rules'],
+        ]);
     }
 }

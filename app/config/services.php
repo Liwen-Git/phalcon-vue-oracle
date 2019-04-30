@@ -96,6 +96,11 @@ $di->setShared('db_acc', function () {
         if($event->getType() == 'beforeQuery'){
             //在sql发送到数据库前启动分析
             $profiler -> startProfile($connection->getSQLStatement());
+            $profile = $profiler->getLastProfile();
+            $sql = $profile->getSQLStatement();
+            $params = $connection->getSqlVariables();
+            (is_array($params) && count($params)) && $params = json_encode($params);
+            $this->getLog()->info('【db_acc】执行前的sql:'. $sql . PHP_EOL .'参数:' . $params);
         }
         if($event -> getType() == 'afterQuery'){
             //在sql执行完毕后停止分析
@@ -107,7 +112,7 @@ $di->setShared('db_acc', function () {
             (is_array($params) && count($params)) && $params = json_encode($params);
             $executeTime = $profile->getTotalElapsedSeconds();
             //日志记录
-            $this->getLog()->info('db_crm执行sql:'. $sql . PHP_EOL .'参数:' . $params);
+            $this->getLog()->info('【db_acc】执行后的sql:'. $sql . PHP_EOL .'参数:' . $params);
             $this->getLog()->info('执行时间:'. $executeTime);
         }
     });
@@ -127,7 +132,7 @@ $di->setShared('db_crm', function () {
         'username' => $config->database1->username,
         'password' => $config->database1->password,
         'dbname'   => $config->database1->dbname,
-        'charset'  => $config->database1->charset
+        'charset'  => $config->database1->charset,
     ];
 
     if ($config->database1->adapter == 'Postgresql') {
@@ -141,18 +146,23 @@ $di->setShared('db_crm', function () {
         if($event->getType() == 'beforeQuery'){
             //在sql发送到数据库前启动分析
             $profiler -> startProfile($connection->getSQLStatement());
+            $profile = $profiler->getLastProfile();
+            $sql = $profile->getSQLStatement();
+            $params = $connection->getSqlVariables();
+            (is_array($params) && count($params)) && $params = json_encode($params);
+            $this->getLog()->info('【db_crm】执行前的sql:'. $sql . PHP_EOL .'参数:' . $params);
         }
         if($event -> getType() == 'afterQuery'){
             //在sql执行完毕后停止分析
             $profiler -> stopProfile();
             //获取分析结果
-            $profile = $profiler -> getLastProfile();
+            $profile = $profiler->getLastProfile();
             $sql = $profile->getSQLStatement();
             $params = $connection->getSqlVariables();
             (is_array($params) && count($params)) && $params = json_encode($params);
             $executeTime = $profile->getTotalElapsedSeconds();
             //日志记录
-            $this->getLog()->info('db_crm执行sql:'. $sql . PHP_EOL .'参数:' . $params);
+            $this->getLog()->info('【db_crm】执行后的sql:'. $sql . PHP_EOL .'参数:' . $params);
             $this->getLog()->info('执行时间:'. $executeTime);
         }
     });
