@@ -20,7 +20,35 @@ let trimMenuUrlPrefix = function (menus, prefix = '/admin') {
     return menus;
 };
 
+/**
+ * 解决页面刷新 vuex数据丢失问题
+ * @type {string}
+ */
+const STATE_KEY = 'state';
+// 状态本地存储插件
+const stateLocalStoragePlugin = function (store) {
+    // 当 store 初始化后调用
+    let state = Lockr.get(STATE_KEY);
+    if (state) {
+        store.commit('setGlobalLoading', state.globalLoading);
+        store.commit('setUser', state.user);
+        store.commit('setMenus', state.menus);
+        store.commit('setRules', state.rules);
+        store.commit('setCurrentMenu', state.currentMenu);
+    }
+
+    store.subscribe((mutation, state) => {
+        // 每次 mutation 之后调用
+        // mutation 的格式为 { type, payload }
+        Lockr.set(STATE_KEY, state);
+    })
+};
+
+/**
+ * 实例化vuex
+ */
 export default new Vuex.Store({
+    strict: process.env.NODE_ENV !== 'production',
     state: {
         globalLoading: false,
         user: null,
@@ -74,5 +102,8 @@ export default new Vuex.Store({
             context.commit('setMenus', []);
             context.commit('setRules', []);
         }
-    }
+    },
+    plugins: [
+        stateLocalStoragePlugin,
+    ]
 });
