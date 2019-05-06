@@ -24,6 +24,8 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex';
+
     export default {
         name: "login",
         data() {
@@ -48,17 +50,29 @@
             doLogin() {
                 this.$refs.form.validate(valid => {
                     if (valid) {
-                        api.post('/login', this.form).then(data => {
+                        api.post('/self/login', this.form).then(data => {
                             let res = {
                                 user: data.user,
                                 menus: data.menus,
                                 rules: data.rules,
                             };
                             this.$store.dispatch('storeUserAndMenus', res);
-                            this.$router.push('/example');
+                            this.$router.push('/welcome');
                         })
                     }
                 })
+            }
+        },
+        computed: {
+            ...mapState (
+                [
+                    'user',
+                ]
+            )
+        },
+        created() {
+            if (this.user) {
+                this.$router.replace('/welcome');
             }
         }
     }

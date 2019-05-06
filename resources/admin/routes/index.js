@@ -1,4 +1,4 @@
-import Example from '../components/example';
+import Welcome from '../components/welcome';
 
 import Login from '../components/login';
 import Home from '../components/home';
@@ -10,7 +10,7 @@ const routes = [
         path: '/',
         component: Home,
         children: [
-            {path: 'example', component: Example, name: 'Example'},
+            {path: 'welcome', component: Welcome, name: 'Welcome'},
         ]
     }
 ];

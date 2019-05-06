@@ -49,11 +49,34 @@
         },
         methods: {
             handleCommand(command) {
+                switch (command) {
+                    case 'logout':
+                        this.logout();
+                        break;
+                }
+            },
+            logout() {
+                this.$confirm('确认退出吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(() => {
+                    api.post('/self/logout').then(() => {
+                        this.$message.success('退出成功');
+                    });
+                    this.$store.dispatch('clearUserAndMenus');
+                    this.$router.replace('/login');
+                }).catch(() => {
 
+                })
             }
         },
         created() {
-
+            // 登陆验证
+            if(!this.user){
+                this.$message.warning('您尚未登录');
+                this.$router.replace('/login');
+                return ;
+            }
         },
         computed: {
             ...mapState([

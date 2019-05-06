@@ -139,4 +139,13 @@ class UserService extends BaseService
 
         return $builder;
     }
+
+    public function logout()
+    {
+        $sessionId = $this->session->getID();
+        $user = $this->redis->hget(self::USER_KEY, $sessionId);
+        $user = json_decode($user, true);
+        $this->redis->hdel(self::USER_KEY, $sessionId);
+        $this->redis->hdel(self::SESSION_KEY, $user['user_id']);
+    }
 }

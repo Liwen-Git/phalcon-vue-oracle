@@ -6,9 +6,12 @@ namespace App\Controllers;
 use App\Library\Result;
 use App\Service\UserService;
 
-class LoginController extends ControllerBase
+class SelfController extends ControllerBase
 {
-    public function indexAction()
+    /**
+     * 登录
+     */
+    public function loginAction()
     {
         $post = $this->request->getJsonRawBody(true);
         $account = $post['account'];
@@ -24,5 +27,16 @@ class LoginController extends ControllerBase
             'menus' => $menuAndRules['menuArray'],
             'rules' => $menuAndRules['rules'],
         ]);
+    }
+
+    /**
+     * 退出
+     */
+    public function logoutAction()
+    {
+        $userService = new UserService();
+        $userService->logout();
+
+        Result::success();
     }
 }
