@@ -1,5 +1,7 @@
 <template>
-    <div class="welcome_bg"></div>
+    <div class="welcome_div">
+        <img src="../../assets/images/welcome-bg.png" class="welcome_bg">
+    </div>
 </template>
 
 <script>
@@ -15,13 +17,8 @@
 </script>
 
 <style scoped>
-    .welcome_bg {
-        width: 100%;
+    .welcome_div {
         height: 100%;
-        position: fixed;
-        background-image: url(../../assets/images/welcome-bg.png);
-        background-repeat: no-repeat;
-        background-size: cover;
-        overflow: hidden;
+        background-color: #f0f3f4;
     }
 </style>

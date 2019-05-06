@@ -26,7 +26,7 @@
             <left-menu :menus="menus"></left-menu>
             <!-- 主页面 内容部分 -->
             <el-main class="main-content">
-                <el-col :span="24">
+                <el-col :span="24" class="main-col">
                     <transition name="fade" mode="out-in" appear>
                         <router-view v-loading="globalLoading"></router-view>
                     </transition>
@@ -44,7 +44,7 @@
         name: "home",
         data() {
             return {
-                logo: '后台管理系统',
+                logo: '账务系统',
             }
         },
         methods: {
@@ -138,6 +138,11 @@
     }
 
     .main-content {
-        overflow-y: scroll;
+        /*overflow-y: scroll;*/
+        padding: 0;
+    }
+
+    .main-col {
+        height: 100%;
     }
 </style>
