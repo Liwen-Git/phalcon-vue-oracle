@@ -10,8 +10,8 @@ Vue.use(Vuex);
  */
 let trimMenuUrlPrefix = function (menus, prefix = '/admin') {
     menus.forEach((menu) => {
-        if (menu.url && menu.url.indexOf(prefix) === 0) {
-            menu.url = menu.url.substr(prefix.length);
+        if (menu.menu_url && menu.menu_url.indexOf(prefix) === 0) {
+            menu.menu_url = menu.menu_url.substr(prefix.length);
         }
         if (menu.sub && menu.sub.length > 0) {
             trimMenuUrlPrefix(menu.sub);
