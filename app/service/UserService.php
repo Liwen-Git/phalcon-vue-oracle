@@ -8,8 +8,10 @@ use App\Library\ResultCode;
 use App\Models\MenuActions;
 use App\Models\Menus;
 use App\Models\RoleMenuAct;
+use App\Models\RoleNames;
 use App\Models\UserRole;
 use App\Models\Users;
+use Phalcon\Paginator\Adapter\Model;
 
 class UserService extends BaseService
 {
@@ -140,6 +142,9 @@ class UserService extends BaseService
         return $builder;
     }
 
+    /**
+     * 退出登录
+     */
     public function logout()
     {
         $sessionId = $this->session->getID();
@@ -147,5 +152,66 @@ class UserService extends BaseService
         $user = json_decode($user, true);
         $this->redis->hdel(self::USER_KEY, $sessionId);
         $this->redis->hdel(self::SESSION_KEY, $user['user_id']);
+    }
+
+    /**
+     * 获取用户列表
+     * @param array $params
+     * @param bool $returnAll
+     * @return array|void
+     */
+    public static function getList(array $params, $returnAll = false)
+    {
+        $userId = array_get($params, 'userId');
+        $name = array_get($params, 'name');
+        $status = array_get($params, 'status');
+        $page = array_get($params, 'page', 1);
+        $pageSize = array_get($params, 'pageSize', 10);
+
+        $query = Users::query();
+        if ($userId) {
+            $query->andwhere('user_id = '. $userId);
+        }
+        if ($name) {
+            $query->andwhere('name like '. "'%$name%'");
+        }
+        if ($status) {
+            $query->andwhere('status = '. $status);
+        }
+        $result = $query->execute();
+
+        if ($returnAll) {
+            if ($result) {
+                return $result->toArray();
+            } else {
+                return [];
+            }
+        } else {
+            $paginator = new Model([
+                'data' => $result,
+                'limit' => $pageSize,
+                'page' => $page,
+            ]);
+            $result = $paginator->getPaginate();
+            return $result;
+        }
+    }
+
+    public function getRoleNamesByUserId($userId)
+    {
+        $userRole = UserRole::class;
+        $roleNames = RoleNames::class;
+        $builder = $this->modelsManager->createBuilder()
+            ->columns('r.*')
+            ->addfrom($userRole, 't')
+            ->leftJoin($roleNames, "r.role_id = t.role_id", 'r')
+            ->where('r.status = 1')
+            ->andwhere('t.user_id = '. $userId)
+            ->getQuery()
+            ->execute();
+        if ($builder) {
+            $builder = $builder->toArray();
+        }
+        return $builder;
     }
 }

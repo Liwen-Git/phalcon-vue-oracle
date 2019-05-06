@@ -17,6 +17,11 @@ try {
     include BASE_PATH . '/vendor/autoload.php';
 
     /**
+     * add Common function
+     */
+    include APP_PATH . './library/CommonFunction.php';
+
+    /**
      * The FactoryDefault Dependency Injector automatically registers
      * the services that provide a full stack framework.
      */

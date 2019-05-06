@@ -43,5 +43,6 @@
 <style scoped>
     .page-header {
         height: 20px !important;
+        padding-top: 15px;
     }
 </style>

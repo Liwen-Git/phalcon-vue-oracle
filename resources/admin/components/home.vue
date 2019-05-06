@@ -21,7 +21,7 @@
             </el-container>
         </el-header>
         <!-- 下部分 -->
-        <el-container>
+        <el-container class="next-container">
             <!-- 左部分 菜单列表 -->
             <left-menu :menus="menus"></left-menu>
             <!-- 主页面 内容部分 -->
@@ -97,6 +97,10 @@
         height: 100%;
     }
 
+    .next-container {
+        overflow: hidden;
+    }
+
     .header {
         padding: 0;
         border-bottom: solid 1px #e6e6e6;
@@ -138,7 +142,7 @@
     }
 
     .main-content {
-        /*overflow-y: scroll;*/
+        overflow: auto;
         padding: 0;
     }
 
