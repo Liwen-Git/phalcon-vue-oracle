@@ -178,6 +178,7 @@ class UserService extends BaseService
         if ($status) {
             $query->andwhere('status = '. $status);
         }
+        $query->orderBy('to_number(user_id) desc');
         $result = $query->execute();
 
         if ($returnAll) {
@@ -197,6 +198,11 @@ class UserService extends BaseService
         }
     }
 
+    /**
+     * 通过用户id获取用户角色
+     * @param $userId
+     * @return mixed
+     */
     public function getRoleNamesByUserId($userId)
     {
         $userRole = UserRole::class;

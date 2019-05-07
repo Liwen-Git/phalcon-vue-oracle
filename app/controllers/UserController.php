@@ -7,6 +7,9 @@ use App\Service\UserService;
 
 class UserController extends ControllerBase
 {
+    /**
+     * 用户管理列表
+     */
     public function listAction()
     {
         $param = $this->request->get();
@@ -20,12 +23,18 @@ class UserController extends ControllerBase
         $list = UserService::getList($params);
 
         $userService = new UserService();
-        foreach ($list->items as &$item) {
-//            $item->role_name = $userService->getRoleNamesByUserId($item->user_id);
+        $data = [];
+        foreach ($list->items as $k => $item) {
+            $roleNames = $userService->getRoleNamesByUserId($item->user_id);
+            $roleNames = !empty($roleNames) ? implode(',',array_column($roleNames, 'role_name')) : '';
+
+            $data[$k] = $list->items[$k]->toArray();
+            $data[$k]['role_name'] = $roleNames;
+            $data[$k]['phone'] = substr_cut($item->phone, 3, 4);
         }
 
         Result::success([
-            'list' => $list->items,
+            'list' => $data,
             'total' => $list->total_items,
         ]);
     }
