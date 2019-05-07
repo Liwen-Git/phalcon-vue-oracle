@@ -55,10 +55,16 @@
                 @current-change="getList"
             ></el-pagination>
         </el-col>
+
+        <el-dialog title="添加用户" :visible.sync="addDialog" width="30%" :close-on-click-modal="false">
+            <user-add @close="addDialog = false"></user-add>
+        </el-dialog>
     </page>
 </template>
 
 <script>
+    import UserAdd from './user-add';
+
     export default {
         name: "user",
         data() {
@@ -86,14 +92,19 @@
 
             },
             getList() {
+                this.theLoading = true;
                 api.get('user/list', this.form).then(data => {
                     this.list = data.list;
                     this.total = data.total;
+                    this.theLoading = false;
                 })
             }
         },
         created() {
             this.getList();
+        },
+        components: {
+            UserAdd,
         }
     }
 </script>

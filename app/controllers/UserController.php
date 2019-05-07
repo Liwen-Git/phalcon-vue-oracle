@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Library\Result;
+use App\Library\ResultCode;
+use App\Service\BaseService;
 use App\Service\UserService;
 
 class UserController extends ControllerBase
@@ -15,7 +17,7 @@ class UserController extends ControllerBase
         $param = $this->request->get();
         $userId = $param['user_id'];
         $name = $param['name'];
-        $status = $param['status'];
+        $status = isset($param['status']) ? $param['status'] : '';
         $pageSize = $param['pageSize'];
         $page = $param['page'];
 
@@ -37,5 +39,26 @@ class UserController extends ControllerBase
             'list' => $data,
             'total' => $list->total_items,
         ]);
+    }
+
+    public function addAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $account = trim($post['account']);
+        $name = trim($post['name']);
+        $phone = trim($post['phone']);
+        $password = trim($post['password']);
+        $roleIds = $post['roleIds'];
+
+        $checkAccount = UserService::getByAccount($account);
+        if ($checkAccount) {
+            Result::error(ResultCode::ACCOUNT_EXISTS, '添加用户失败,该用户名已被占用');
+        }
+
+        $userService = new UserService();
+        $userId = $userService->getNextId(BaseService::DB_CRM, 'seq_users_id');
+
+        $data = compact('userId', 'account', 'name', 'phone', 'password');
+        $userService->addUser($data);
     }
 }

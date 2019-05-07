@@ -6,6 +6,8 @@ use Phalcon\Mvc\Model;
 
 class Users extends Model
 {
+    const STATUS_ON = 1;
+
     public $account;
 
     public function initialize()

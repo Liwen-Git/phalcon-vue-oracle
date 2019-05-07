@@ -6,6 +6,8 @@ use Phalcon\Mvc\Model;
 
 class RoleNames extends Model
 {
+    const STATUS_ON = 1;
+
     public function initialize()
     {
         $this->setConnectionService('db_crm');

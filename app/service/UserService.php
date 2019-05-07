@@ -220,4 +220,15 @@ class UserService extends BaseService
         }
         return $builder;
     }
+
+    public function addUser(array $data)
+    {
+        $user = new Users();
+        $user->user_id = $data['userId'];
+        $user->account = $data['account'];
+        $user->name = $data['name'];
+        $user->phone = $data['phone'];
+        $user->password = md5(md5($data['password']));
+        $user->status = Users::STATUS_ON;
+    }
 }

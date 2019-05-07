@@ -232,7 +232,7 @@ $di->set('dispatcher', function () {
             }
         }
     });
-
+    
     $dispatcher = new Dispatcher();
     $dispatcher->setEventsManager($eventManager);
     $dispatcher->setDefaultNamespace('App\Controllers');
