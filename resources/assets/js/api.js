@@ -34,8 +34,9 @@ function handleError(error) {
         if (res && res.code) {
             switch (res.code) {
                 case CODE_UN_LOGIN:
-                    window.location = res.data.login_url;
-                    Message.error('您的登录信息已失效，请重新登录');
+                    store.dispatch('clearUserAndMenus');
+                    router.replace('/login');
+                    Message.error('您的登录信息已失效, 请先登录');
                     break;
                 default:
                     console.log('接口返回错误信息:', res);

@@ -18,6 +18,7 @@ use Phalcon\Session\Adapter\Redis as RedisSession;
 use Phalcon\Logger\Adapter\File as LogFile;
 use Phalcon\Logger\Formatter\Line as LogLine;
 use Phalcon\Db\Profiler as DbProfiler;
+use App\Service\BaseService;
 
 /**
  * Shared configuration service
@@ -220,6 +221,7 @@ $di->set('dispatcher', function () {
     $request = new Request();
     $url = $request->getURI();
 
+    // 这里是让以/admin开头的url都跳转到/admin/index去，从而显示页面
     $eventManager->attach('dispatch:beforeException', function (Event $event, $dispatcher, Exception $exception) use ($url) {
         if ($exception instanceof DispatchException) {
             if( Common::startsWith($url, '/admin')){
@@ -232,7 +234,13 @@ $di->set('dispatcher', function () {
             }
         }
     });
-    
+
+    // 这里是请求路由是否登录的过滤判断：不是以/admin开头的路由都进入判断，除了登录和退出以外
+    if (!Common::startsWith($url, '/admin')) {
+        $baseService = new BaseService();
+        $baseService->loginFilter($url);
+    }
+
     $dispatcher = new Dispatcher();
     $dispatcher->setEventsManager($eventManager);
     $dispatcher->setDefaultNamespace('App\Controllers');

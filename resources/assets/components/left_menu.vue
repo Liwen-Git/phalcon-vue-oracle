@@ -48,7 +48,7 @@
 
 <style scoped>
     .menu:not(.el-menu--collapse) {
-        width: 300px;
+        width: 250px;
         min-height: 400px;
     }
 </style>

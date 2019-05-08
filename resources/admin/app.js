@@ -48,6 +48,7 @@ Vue.use(VueRouter);
  * 引入 vuex 集中式管理组件状态 [在页面中使用this.$store调用,因为实例Vue的时候引入了]
  */
 import store from './store';
+window.store = store;
 
 /**
  * 引入自定义全局组件 Page => 主要包含 面包屑
