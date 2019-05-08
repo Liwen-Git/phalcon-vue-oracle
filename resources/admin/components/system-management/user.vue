@@ -25,7 +25,7 @@
                 <el-table-column prop="user_id" label="ID"></el-table-column>
                 <el-table-column prop="account" label="用户名"></el-table-column>
                 <el-table-column prop="name" label="姓名"></el-table-column>
-                <el-table-column prop="phone" label="手机号"></el-table-column>
+                <el-table-column prop="phone_cut" label="手机号"></el-table-column>
                 <el-table-column prop="status" label="状态">
                     <template slot-scope="scope">
                         <span v-if="scope.row.status == 1">正常</span>
@@ -41,7 +41,7 @@
                 <el-table-column prop="last_login_ip" label="登陆ip"></el-table-column>
                 <el-table-column label="操作" min-width="100">
                     <template slot-scope="scope">
-                        <el-button type="text" size="mini">编辑</el-button>
+                        <el-button type="text" size="mini" @click="edit(scope.row)">编辑</el-button>
                         <el-button type="text" size="mini">删除</el-button>
                         <el-button type="text" size="mini">解锁</el-button>
                     </template>
@@ -59,11 +59,16 @@
         <el-dialog title="添加用户" :visible.sync="addDialog" width="30%" :close-on-click-modal="false">
             <user-add @close="addDialog = false" @addSuccess="addSuccess"></user-add>
         </el-dialog>
+
+        <el-dialog title="编辑用户" :visible.sync="editDialog" width="30%" :close-on-click-modal="false">
+            <user-edit :user="editUser" @close="editDialog = false"></user-edit>
+        </el-dialog>
     </page>
 </template>
 
 <script>
     import UserAdd from './user-add';
+    import UserEdit from './user-edit';
 
     export default {
         name: "user",
@@ -78,6 +83,8 @@
                     page: 1,
                 },
                 addDialog: false,
+                editDialog: false,
+                editUser: null,
                 list: [],
 
                 total: 0,
@@ -100,6 +107,10 @@
                 this.addDialog = false;
                 this.form.page = 1;
                 this.getList();
+            },
+            edit(user) {
+                this.editUser = user;
+                this.editDialog = true;
             }
         },
         created() {
@@ -107,6 +118,7 @@
         },
         components: {
             UserAdd,
+            UserEdit,
         }
     }
 </script>

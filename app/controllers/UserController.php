@@ -32,11 +32,13 @@ class UserController extends ControllerBase
         $data = [];
         foreach ($list->items as $k => $item) {
             $roleNames = $userService->getRoleNamesByUserId($item->user_id);
+            $roleIds = array_column($roleNames, 'role_id');
             $roleNames = !empty($roleNames) ? implode(',',array_column($roleNames, 'role_name')) : '';
 
             $data[$k] = $list->items[$k]->toArray();
             $data[$k]['role_name'] = $roleNames;
-            $data[$k]['phone'] = substr_cut($item->phone, 3, 4);
+            $data[$k]['role_ids'] = $roleIds;
+            $data[$k]['phone_cut'] = substr_cut($item->phone, 3, 4);
         }
 
         Result::success([
