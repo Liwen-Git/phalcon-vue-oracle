@@ -28,6 +28,10 @@ class BaseService extends Injectable
         return $res['NEXTID'];
     }
 
+    /**
+     * 登录过滤判断：判断是否登录或者登录是否过期
+     * @param $uri
+     */
     public function loginFilter($uri)
     {
         $publicUrls = [

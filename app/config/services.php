@@ -19,6 +19,7 @@ use Phalcon\Logger\Adapter\File as LogFile;
 use Phalcon\Logger\Formatter\Line as LogLine;
 use Phalcon\Db\Profiler as DbProfiler;
 use App\Service\BaseService;
+use App\Service\UserService;
 
 /**
  * Shared configuration service
@@ -272,4 +273,13 @@ $di->setShared('log', function() {
     $formatter->setDateFormat("Y/m/d H:i:s");
     $log->setFormatter($formatter);
     return $log;
+});
+/**
+ * 注入后台登录user信息
+ */
+$di->setShared('user', function () {
+    $sessionId = $this->getSession()->getID();
+    $user = $this->getRedis()->hget(UserService::USER_KEY, $sessionId);
+    if ($user) $user = json_decode($user, true);
+    return $user;
 });
