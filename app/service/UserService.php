@@ -11,6 +11,7 @@ use App\Models\RoleMenuAct;
 use App\Models\RoleNames;
 use App\Models\UserRole;
 use App\Models\Users;
+use Phalcon\Exception;
 use Phalcon\Paginator\Adapter\Model;
 
 class UserService extends BaseService
@@ -221,14 +222,29 @@ class UserService extends BaseService
         return $builder;
     }
 
+    /**
+     * 添加用户
+     * @param array $data
+     * @return Users
+     * @throws Exception
+     */
     public function addUser(array $data)
     {
+        $userId = $this->getNextId(self::DB_CRM, 'seq_users_id');
         $user = new Users();
-        $user->user_id = $data['userId'];
+        $user->user_id = $userId;
         $user->account = $data['account'];
         $user->name = $data['name'];
-        $user->phone = $data['phone'];
         $user->password = md5(md5($data['password']));
+        $user->phone = $data['phone'];
         $user->status = Users::STATUS_ON;
+        $user->lastuptname = $this->user['name'];
+        $user->lastupttime = date('Y-m-d H:i:s');
+        $user->pwd_update_date = date('Y-m-d H:i:s');
+
+        if ($user->save() === false) {
+            throw new Exception('添加用户失败');
+        }
+        return $user;
     }
 }

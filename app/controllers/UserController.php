@@ -2,9 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Library\OperateLogAction;
 use App\Library\Result;
 use App\Library\ResultCode;
+use App\Models\OperateLog;
 use App\Service\BaseService;
+use App\Service\OperateLogService;
+use App\Service\RoleService;
 use App\Service\UserService;
 
 class UserController extends ControllerBase
@@ -41,6 +45,9 @@ class UserController extends ControllerBase
         ]);
     }
 
+    /**
+     * 用户添加
+     */
     public function addAction()
     {
         $post = $this->request->getJsonRawBody(true);
@@ -55,10 +62,24 @@ class UserController extends ControllerBase
             Result::error(ResultCode::ACCOUNT_EXISTS, '添加用户失败,该用户名已被占用');
         }
 
-        $userService = new UserService();
-        $userId = $userService->getNextId(BaseService::DB_CRM, 'seq_users_id');
+        $this->getDI()->get(BaseService::DB_CRM)->begin();
+        $user = [];
+        try {
+            $data = compact('account', 'name', 'phone', 'password');
+            $userService = new UserService();
+            $user = $userService->addUser($data);
 
-        $data = compact('userId', 'account', 'name', 'phone', 'password');
-        $userService->addUser($data);
+            $roleService = new RoleService();
+            $roleService->addUserRole($user->user_id, $roleIds);
+
+            $this->getDI()->get(BaseService::DB_CRM)->commit();
+        } catch (\Exception $e) {
+            $this->getDI()->get(BaseService::DB_CRM)->rollback();
+            Result::error(ResultCode::DB_INSERT_FAIL, $e->getMessage());
+        }
+        $log = new OperateLogService();
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USERADD, OperateLog::STATUS_SUCCESS);
+
+        Result::success($user);
     }
 }

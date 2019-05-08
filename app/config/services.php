@@ -178,7 +178,8 @@ $di->setShared('db_crm', function () {
  * If the configuration specify the use of metadata adapter use it or use memory otherwise
  */
 $di->setShared('modelsMetadata', function () {
-    return new MetaDataAdapter();
+    $metadata = new MetaDataAdapter();
+    return $metadata;
 });
 
 /**

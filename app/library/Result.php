@@ -15,7 +15,7 @@ class Result
      */
     public static function success($message = '请求成功', $data = [])
     {
-        if (is_array($message) || $message instanceof \ArrayAccess) {
+        if (is_array($message) || $message instanceof \ArrayAccess || is_object($message)) {
             $data = $message;
             $message = '请求成功';
         }

@@ -17,7 +17,7 @@
         </el-form-item>
         <el-form-item prop="roleIds" label="所属角色">
             <el-checkbox-group v-model="form.roleIds">
-                    <el-checkbox v-for="(item, key) in roles" :key="key" :label="item.role_name" :value="item.role_id"></el-checkbox>
+                    <el-checkbox v-for="(item, key) in roles" :key="key" :label="item.role_id">{{item.role_name}}</el-checkbox>
             </el-checkbox-group>
         </el-form-item>
         <el-form-item>
@@ -89,7 +89,9 @@
                 this.$refs.form.validate(valid => {
                     if (valid) {
                         api.post('user/add', this.form).then(data => {
-
+                            this.$emit('addSuccess');
+                            this.$message.success('添加用户成功');
+                            this.$refs.form.resetFields();
                         })
                     }
                 })

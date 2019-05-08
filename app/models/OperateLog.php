@@ -6,26 +6,36 @@ use Phalcon\Db\Column;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\MetaData;
 
-class UserRole extends Model
+class OperateLog extends Model
 {
+    /**
+     * 状态 1-成功 2-失败
+     */
+    const STATUS_SUCCESS = 1;
+    const STATUS_FAILED = 2;
+
     public function initialize()
     {
         $this->setConnectionService('db_crm');
         $this->setSchema('crm_user');
-        $this->setSource('t_user_role');
+        $this->setSource('t_operate_log');
     }
 
     public function getSource()
     {
-        return 't_user_role';
+        return 't_operate_log';
     }
 
     public function columnMap()
     {
         return [
-            'AUTO_ID'  => 'auto_id',
-            'USER_ID'  => 'user_id',
-            'ROLE_ID'  => 'role_id',
+            'AUTOID'     => 'autoid',
+            'USER_ID'    => 'user_id',
+            'OPR_NAME'   => 'opr_name',
+            'OPR_ACTION' => 'opr_action',
+            'OPR_IP'     => 'opr_ip',
+            'OPR_TIME'   => 'opr_time',
+            'OPR_STATUS' => 'opr_status',
         ];
     }
 
@@ -34,32 +44,44 @@ class UserRole extends Model
         return array(
             // Every column in the mapped table 表字段
             MetaData::MODELS_ATTRIBUTES => [
-                'AUTO_ID',
+                'AUTOID',
                 'USER_ID',
-                'ROLE_ID',
+                'OPR_NAME',
+                'OPR_ACTION',
+                'OPR_IP',
+                'OPR_TIME',
+                'OPR_STATUS',
             ],
 
             // Every column part of the primary key 主键
             MetaData::MODELS_PRIMARY_KEY => [
-                'AUTO_ID',
+                'AUTOID',
             ],
 
             // Every column that isn't part of the primary key 非主键
             MetaData::MODELS_NON_PRIMARY_KEY => [
                 'USER_ID',
-                'ROLE_ID',
+                'OPR_NAME',
+                'OPR_ACTION',
+                'OPR_IP',
+                'OPR_TIME',
+                'OPR_STATUS',
             ],
 
             // Every column that doesn't allows null values 不为null的字段
             MetaData::MODELS_NOT_NULL => [
-                'AUTO_ID',
+                'AUTOID',
             ],
 
             // Every column and their data types 每个字段类型
             MetaData::MODELS_DATA_TYPES => [
-                'AUTO_ID' => Column::TYPE_VARCHAR,
+                'AUTOID' => Column::TYPE_VARCHAR,
                 'USER_ID' => Column::TYPE_VARCHAR,
-                'ROLE_ID' => Column::TYPE_VARCHAR,
+                'OPR_NAME' => Column::TYPE_VARCHAR,
+                'OPR_ACTION' => Column::TYPE_VARCHAR,
+                'OPR_IP' => Column::TYPE_VARCHAR,
+                'OPR_TIME' => Column::TYPE_DATE,
+                'OPR_STATUS' => Column::TYPE_VARCHAR,
             ],
 
             // The columns that have numeric data types
@@ -73,9 +95,13 @@ class UserRole extends Model
 
             // How every column must be bound/casted
             MetaData::MODELS_DATA_TYPES_BIND => [
-                'AUTO_ID' => Column::BIND_PARAM_STR,
+                'AUTOID' => Column::BIND_PARAM_STR,
                 'USER_ID' => Column::BIND_PARAM_STR,
-                'ROLE_ID' => Column::BIND_PARAM_STR,
+                'OPR_NAME' => Column::BIND_PARAM_STR,
+                'OPR_ACTION' => Column::BIND_PARAM_STR,
+                'OPR_IP' => Column::BIND_PARAM_STR,
+                'OPR_TIME' => Column::BIND_PARAM_STR,
+                'OPR_STATUS' => Column::BIND_PARAM_STR,
             ],
 
             // Fields that must be ignored from INSERT SQL statements
