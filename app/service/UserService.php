@@ -278,4 +278,24 @@ class UserService extends BaseService
         }
         return $user;
     }
+
+    /**
+     * 删除用户
+     * @param $userId
+     * @throws Exception
+     */
+    public function deleteUser($userId)
+    {
+        $users = Users::find([
+            "user_id = '{$userId}'",
+        ]);
+
+        if ($users) {
+            foreach ($users as $user) {
+                if ($user->delete() === false) {
+                    throw new Exception('删除用户失败');
+                }
+            }
+        }
+    }
 }

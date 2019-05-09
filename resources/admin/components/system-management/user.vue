@@ -42,7 +42,7 @@
                 <el-table-column label="操作" min-width="100">
                     <template slot-scope="scope">
                         <el-button type="text" size="mini" @click="edit(scope.row)">编辑</el-button>
-                        <el-button type="text" size="mini">删除</el-button>
+                        <el-button type="text" size="mini" @click="deleteUser(scope.row.user_id)">删除</el-button>
                         <el-button type="text" size="mini">解锁</el-button>
                     </template>
                 </el-table-column>
@@ -116,6 +116,18 @@
                 this.editDialog = false;
                 this.form.page = 1;
                 this.getList();
+            },
+            deleteUser(userId) {
+                this.$confirm('确定删除吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    api.post('user/delete', {userId: userId}).then(() => {
+                        this.$message.success('用户删除成功');
+                        this.getList();
+                    })
+                }).catch(() => {})
             }
         },
         created() {

@@ -132,4 +132,38 @@ class UserController extends ControllerBase
 
         Result::success($user);
     }
+
+    /**
+     * 删除用户
+     */
+    public function deleteAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $userId = (int)$post['userId'];
+
+        $log = new OperateLogService();
+
+        $this->getDI()->get(BaseService::DB_CRM)->begin();
+        try {
+            // 删除用户表中的用户
+            $userService = new UserService();
+            $userService->deleteUser($userId);
+
+            // 删除用户角色关系表中的数据
+            $roleService = new RoleService();
+            $roleService->deleteUserRoleByUserId($userId);
+
+            $this->getDI()->get(BaseService::DB_CRM)->commit();
+        }catch (\Exception $e) {
+            $this->getDI()->get(BaseService::DB_CRM)->rollback();
+
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USERDEL, OperateLog::STATUS_FAILED);
+            $msg = $e->getMessage() ?: '删除用户失败';
+            Result::error(ResultCode::DB_DELETE_FAIL, $msg);
+        }
+
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USERDEL, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
+    }
 }
