@@ -124,7 +124,7 @@ class UserController extends ControllerBase
             $this->getDI()->get(BaseService::DB_CRM)->rollback();
 
             $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USEREDIT, OperateLog::STATUS_FAILED);
-            $msg = $e->getMessage() ?: '编辑用户失败';
+            $msg = $e->getMessage() ?: '用户编辑失败';
             Result::error(ResultCode::DB_UPDATE_FAIL, $msg);
         }
 
@@ -158,11 +158,36 @@ class UserController extends ControllerBase
             $this->getDI()->get(BaseService::DB_CRM)->rollback();
 
             $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USERDEL, OperateLog::STATUS_FAILED);
-            $msg = $e->getMessage() ?: '删除用户失败';
+            $msg = $e->getMessage() ?: '用户删除失败';
             Result::error(ResultCode::DB_DELETE_FAIL, $msg);
         }
 
         $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USERDEL, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
+    }
+
+    /**
+     * 用户解锁
+     */
+    public function unlockAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $userId = (int)$post['userId'];
+
+        $log = new OperateLogService();
+
+        try {
+            // 解锁用户 就是：重置密码错误次数为0
+            $userService = new UserService();
+            $userService->unlockUser($userId);
+        }catch (\Exception $e) {
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USERUNLOCK, OperateLog::STATUS_FAILED);
+            $msg = $e->getMessage() ?: '用户解锁失败';
+            Result::error(ResultCode::DB_UPDATE_FAIL, $msg);
+        }
+
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USERUNLOCK, OperateLog::STATUS_SUCCESS);
 
         Result::success();
     }

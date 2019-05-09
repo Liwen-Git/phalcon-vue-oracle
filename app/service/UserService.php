@@ -261,8 +261,7 @@ class UserService extends BaseService
             ->bind(['userId' => $userId])
             ->execute()
             ->getFirst();
-        $account = $user->account;
-        $user->account = $account;
+
         $user->name = $data['name'];
         $user->phone = $data['phone'];
         $user->status = $data['status'];
@@ -274,7 +273,7 @@ class UserService extends BaseService
         }
 
         if ($user->save() === false) {
-            throw new Exception('编辑用户失败');
+            throw new Exception('用户编辑失败');
         }
         return $user;
     }
@@ -293,9 +292,32 @@ class UserService extends BaseService
         if ($users) {
             foreach ($users as $user) {
                 if ($user->delete() === false) {
-                    throw new Exception('删除用户失败');
+                    throw new Exception('用户删除失败');
                 }
             }
         }
+    }
+
+    /**
+     * 用户解锁
+     * @param $userId
+     * @return mixed
+     * @throws Exception
+     */
+    public function unlockUser($userId)
+    {
+        $user = Users::query()->where('user_id = :userId:')
+            ->bind(['userId' => $userId])
+            ->execute()
+            ->getFirst();
+
+        $user->pwd_err_num = 0;
+        $user->lastuptname = $this->user['name'];
+        $user->lastupttime = date('Y-m-d H:i:s');
+
+        if ($user->save() === false) {
+            throw new Exception('用户解锁失败');
+        }
+        return $user;
     }
 }
