@@ -51,4 +51,36 @@ class RoleService extends BaseService
             throw new Exception('所属角色错误');
         }
     }
+
+    /**
+     * 通过用户id 删除用户角色关系
+     * @param $userId
+     * @throws Exception
+     */
+    public function deleteUserRoleByUserId($userId)
+    {
+        $roles = UserRole::find([
+            "user_id = '{$userId}'",
+        ]);
+
+        if ($roles) {
+            foreach ($roles as $role) {
+                if ($role->delete() === false) {
+                    throw new Exception('编辑用户时，删除角色失败');
+                }
+            }
+        }
+    }
+
+    /**
+     * 编辑用户角色关系
+     * @param $userId
+     * @param $roleIds
+     * @throws Exception
+     */
+    public function editUserRole($userId, $roleIds)
+    {
+        $this->deleteUserRoleByUserId($userId);
+        $this->addUserRole($userId, $roleIds);
+    }
 }

@@ -61,7 +61,7 @@
         </el-dialog>
 
         <el-dialog title="编辑用户" :visible.sync="editDialog" width="30%" :close-on-click-modal="false">
-            <user-edit :user="editUser" @close="editDialog = false"></user-edit>
+            <user-edit :user="editUser" @close="editDialog = false" @editSuccess="editSuccess"></user-edit>
         </el-dialog>
     </page>
 </template>
@@ -111,6 +111,11 @@
             edit(user) {
                 this.editUser = user;
                 this.editDialog = true;
+            },
+            editSuccess() {
+                this.editDialog = false;
+                this.form.page = 1;
+                this.getList();
             }
         },
         created() {

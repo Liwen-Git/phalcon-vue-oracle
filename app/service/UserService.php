@@ -247,4 +247,35 @@ class UserService extends BaseService
         }
         return $user;
     }
+
+    /**
+     * 编辑用户信息
+     * @param $userId
+     * @param array $data
+     * @return mixed
+     * @throws Exception
+     */
+    public function editUser($userId, array $data)
+    {
+        $user = Users::query()->where('user_id = :userId:')
+            ->bind(['userId' => $userId])
+            ->execute()
+            ->getFirst();
+        $account = $user->account;
+        $user->account = $account;
+        $user->name = $data['name'];
+        $user->phone = $data['phone'];
+        $user->status = $data['status'];
+        $user->lastuptname = $this->user['name'];
+        $user->lastupttime = date('Y-m-d H:i:s');
+        if (!empty($data['password'])) {
+            $user->password = md5(md5($data['password']));
+            $user->pwd_update_date = date('Y-m-d H:i:s');
+        }
+
+        if ($user->save() === false) {
+            throw new Exception('编辑用户失败');
+        }
+        return $user;
+    }
 }

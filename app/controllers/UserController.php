@@ -64,23 +64,71 @@ class UserController extends ControllerBase
             Result::error(ResultCode::ACCOUNT_EXISTS, '添加用户失败,该用户名已被占用');
         }
 
+        $log = new OperateLogService();
+
         $this->getDI()->get(BaseService::DB_CRM)->begin();
         $user = [];
         try {
+            // 添加用户
             $data = compact('account', 'name', 'phone', 'password');
             $userService = new UserService();
             $user = $userService->addUser($data);
 
+            // 添加用户角色关系
             $roleService = new RoleService();
             $roleService->addUserRole($user->user_id, $roleIds);
 
             $this->getDI()->get(BaseService::DB_CRM)->commit();
         } catch (\Exception $e) {
             $this->getDI()->get(BaseService::DB_CRM)->rollback();
-            Result::error(ResultCode::DB_INSERT_FAIL, $e->getMessage());
+
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USERADD, OperateLog::STATUS_FAILED);
+            $msg = $e->getMessage() ?: '用户添加失败';
+            Result::error(ResultCode::DB_INSERT_FAIL, $msg);
         }
-        $log = new OperateLogService();
+
         $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USERADD, OperateLog::STATUS_SUCCESS);
+
+        Result::success($user);
+    }
+
+    /**
+     * 编辑用户
+     */
+    public function editAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $userId = (int)$post['userId'];
+        $name = trim($post['name']);
+        $phone = trim($post['phone']);
+        $password = trim($post['password']);
+        $roleIds = $post['roleIds'];
+        $status = (int)$post['status'];
+
+        $log = new OperateLogService();
+
+        $this->getDI()->get(BaseService::DB_CRM)->begin();
+        $user = [];
+        try {
+            // 编辑用户
+            $userService = new UserService();
+            $data = compact('name', 'phone', 'password', 'status');
+            $user = $userService->editUser($userId, $data);
+
+            // 编辑用户角色关系 (先删除后添加)
+            $roleService = new RoleService();
+            $roleService->editUserRole($userId, $roleIds);
+
+            $this->getDI()->get(BaseService::DB_CRM)->commit();
+        }catch (\Exception $e) {
+            $this->getDI()->get(BaseService::DB_CRM)->rollback();
+
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USEREDIT, OperateLog::STATUS_FAILED);
+            $msg = $e->getMessage() ?: '编辑用户失败';
+            Result::error(ResultCode::DB_UPDATE_FAIL, $msg);
+        }
+
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::USEREDIT, OperateLog::STATUS_SUCCESS);
 
         Result::success($user);
     }
