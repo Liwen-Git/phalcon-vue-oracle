@@ -2,7 +2,7 @@ import Welcome from '../components/welcome';
 import Login from '../components/login';
 import Home from '../components/home';
 
-import User from '../components/system-management/user';
+import User from '../components/system-management/user/user';
 
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
