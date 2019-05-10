@@ -1,3 +1,4 @@
+import NavTabs from './nav-tabs';
 import Vue from 'vue';
 import Vuex from 'vuex';
 Vue.use(Vuex);
@@ -72,7 +73,7 @@ export default new Vuex.Store({
         },
         setCurrentMenu(state, currentMenu) {
             state.currentMenu = currentMenu;
-        }
+        },
     },
     /** 官方推荐 异步操作放在 actions 中 */
     actions: {
@@ -102,6 +103,9 @@ export default new Vuex.Store({
             context.commit('setMenus', []);
             context.commit('setRules', []);
         }
+    },
+    modules: {
+        navTabs: NavTabs,
     },
     plugins: [
         stateLocalStoragePlugin,

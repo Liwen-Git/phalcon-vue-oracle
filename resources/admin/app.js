@@ -32,7 +32,6 @@ router.beforeEach((to, from, next) => {
     // home.vue 中的内容部分页面全局loading
     store.dispatch('openGlobalLoading');
     NProgress.start();
-    console.log('to', to);
     next();
 });
 // 全局后置钩子

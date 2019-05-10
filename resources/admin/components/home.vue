@@ -26,6 +26,9 @@
             <left-menu :menus="menus"></left-menu>
             <!-- 主页面 内容部分 -->
             <el-main class="main-content">
+                <el-tabs class="tabs" v-model="activeTabName" @tab-remove="closeTab" type="border-card">
+                    <el-tab-pane v-for="item in tabList" :key="item.name" :name="item.name" label="item.label" :closable="item.closable"></el-tab-pane>
+                </el-tabs>
                 <el-col :span="24" class="main-col">
                     <transition name="fade" mode="out-in" appear>
                         <router-view v-loading="globalLoading"></router-view>
@@ -38,7 +41,7 @@
 
 <script>
     import LeftMenu from '../../assets/components/left_menu';
-    import {mapState} from 'vuex';
+    import {mapState, mapMutations} from 'vuex';
 
     export default {
         name: "home",
@@ -48,6 +51,9 @@
             }
         },
         methods: {
+            ...mapMutations('navTabs', [
+                'closeTab',
+            ]),
             handleCommand(command) {
                 switch (command) {
                     case 'logout':
@@ -84,6 +90,17 @@
                 'user',
                 'menus',
                 'rules',
+            ]),
+            activeTabName: {
+                get() {
+                    return this.$store.state.navTabs.activeTabName;
+                },
+                set(value) {
+                    return this.$store.commit("navTabs/setActiveTabName", value);
+                }
+            },
+            ...mapState('navTabs', [
+                'tabList',
             ]),
         },
         components: {

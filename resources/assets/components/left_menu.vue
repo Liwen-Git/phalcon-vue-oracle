@@ -25,6 +25,7 @@
 </template>
 
 <script>
+    import {mapMutations} from 'vuex';
     export default {
         name: "left_menu",
         props: {
@@ -39,10 +40,13 @@
             }
         },
         methods: {
+            ...mapMutations('navTabs',[
+                'addTab',
+            ]),
             change(index, indexPath) {
-
+                this.addTab(indexPath);
             }
-        }
+        },
     }
 </script>
 
