@@ -77,6 +77,108 @@ class RoleService extends BaseService
     }
 
     /**
+     * 获取角色 所属权限
+     * @param $roleId
+     * @return mixed
+     */
+    public static function getRoleMenuActionByRoleId($roleId)
+    {
+        $actions = RoleMenuAct::query()->where('role_id = :roleId:')
+            ->bind(['roleId' => $roleId])
+            ->execute();
+        if ($actions) {
+            $actions = $actions->toArray();
+        }
+        return $actions;
+    }
+
+    /**
+     * 获取角色名称表中的数据
+     * @param $param
+     * @return mixed
+     */
+    public static function getRoleNamesByParam($param)
+    {
+        $roleName = array_get($param, 'roleName');
+        $roleId = array_get($param, 'roleId');
+        $roleIdNot = array_get($param, 'roleIdNot');
+        $query = RoleNames::query();
+        if ($roleId) {
+            $query->andwhere('role_id = '. $roleId);
+        }
+        if ($roleIdNot) {
+            $query->andwhere('role_id != '. $roleIdNot);
+        }
+        if ($roleName) {
+            $query->andwhere('role_name = '. "'$roleName'");
+        }
+        $res = $query->execute();
+        if ($res) $res = $res->toArray();
+
+        return $res;
+    }
+
+    /**
+     * 通过角色id 删除角色名称表
+     * @param $roleId
+     * @throws Exception
+     */
+    public static function deleteRoleNamesByRoleId($roleId)
+    {
+        $roleNames = RoleNames::find([
+            "role_id = '{$roleId}'",
+        ]);
+
+        if ($roleNames) {
+            foreach ($roleNames as $roleName) {
+                if ($roleName->delete() === false) {
+                    throw new Exception('删除角色名称失败');
+                }
+            }
+        }
+    }
+
+    /**
+     * 通过角色id 删除用户与角色关系表数据
+     * @param $roleId
+     * @throws Exception
+     */
+    public static function deleteUserRoleByRoleId($roleId)
+    {
+        $roles = UserRole::find([
+            "role_id = '{$roleId}'",
+        ]);
+
+        if ($roles) {
+            foreach ($roles as $role) {
+                if ($role->delete() === false) {
+                    throw new Exception('通过角色删除用户与角色的关系失败');
+                }
+            }
+        }
+    }
+
+    /**
+     * 通过角色id 删除角色权限
+     * @param $roleId
+     * @throws Exception
+     */
+    public static function deleteRoleMenuActByRoleId($roleId)
+    {
+        $acts = RoleMenuAct::find([
+            "role_id = '{$roleId}'",
+        ]);
+
+        if ($acts) {
+            foreach ($acts as $act) {
+                if ($act->delete() === false) {
+                    throw new Exception('删除角色权限失败');
+                }
+            }
+        }
+    }
+
+    /**
      * 添加用户角色关系
      * @param $userId
      * @param $roleIds
@@ -113,7 +215,7 @@ class RoleService extends BaseService
         if ($roles) {
             foreach ($roles as $role) {
                 if ($role->delete() === false) {
-                    throw new Exception('编辑用户时，删除角色失败');
+                    throw new Exception('删除角色失败');
                 }
             }
         }
@@ -195,5 +297,45 @@ class RoleService extends BaseService
                 }
             }
         }
+    }
+
+    /**
+     * 编辑角色 角色名称表
+     * @param $roleId
+     * @param array $param
+     * @return mixed
+     * @throws Exception
+     */
+    public function editRoleNames($roleId, array $param)
+    {
+        $role = RoleNames::query()->where('role_id = :roleId:')
+            ->bind(['roleId' => $roleId])
+            ->execute()
+            ->getFirst();
+
+        $role->role_name = $param['roleName'];
+        $role->status = $param['status'];
+        $role->remark = $param['remark'];
+        $role->lastuptname = $this->user['name'];
+        $role->lastupttime = date('Y-m-d H:i:s');
+
+        if ($role->save() === false) {
+            throw new Exception('角色编辑失败');
+        }
+        return $role;
+    }
+
+    /**
+     * 编辑角色权限
+     * @param $roleId
+     * @param $actions
+     * @throws Exception
+     */
+    public function editRoleMenuAct($roleId, $actions)
+    {
+        // 1. 先删除之前角色id的权限
+        self::deleteRoleMenuActByRoleId($roleId);
+        // 2. 添加新权限
+        $this->addRoleMenuAct($roleId, $actions);
     }
 }

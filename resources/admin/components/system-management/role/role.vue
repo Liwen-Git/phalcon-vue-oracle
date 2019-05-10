@@ -36,7 +36,7 @@
                 <el-table-column label="操作" min-width="100">
                     <template slot-scope="scope">
                         <el-button type="text" size="mini" @click="edit(scope.row)">编辑</el-button>
-                        <el-button type="text" size="mini" @click="deleteRole(scope.row.user_id)">删除</el-button>
+                        <el-button type="text" size="mini" @click="deleteRole(scope.row.role_id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -54,13 +54,14 @@
         </el-dialog>
 
         <el-dialog title="编辑角色" :visible.sync="editDialog" width="30%" :close-on-click-modal="false">
-
+            <role-edit @close="editDialog = false" :role="role" @editSuccess="addSuccess"></role-edit>
         </el-dialog>
     </page>
 </template>
 
 <script>
     import RoleAdd from './role-add';
+    import RoleEdit from './role-edit';
 
     export default {
         name: "role",
@@ -79,6 +80,7 @@
                 list: [],
                 addDialog: false,
                 editDialog: false,
+                role: null,
             }
         },
         methods: {
@@ -92,14 +94,24 @@
                 this.form.page = 1;
                 this.getList();
             },
-            edit() {
-
+            edit(role) {
+                this.role = role;
+                this.editDialog = true;
             },
-            deleteRole() {
-
+            deleteRole(roleId) {
+                this.$confirm('确定删除吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    api.post('role/delete', {roleId: roleId}).then(() => {
+                        this.$message.success('角色删除成功');
+                        this.getList();
+                    });
+                }).catch(() => {})
             },
             addSuccess() {
-
+                this.search();
             }
         },
         created() {
@@ -107,6 +119,7 @@
         },
         components: {
             RoleAdd,
+            RoleEdit,
         }
     }
 </script>

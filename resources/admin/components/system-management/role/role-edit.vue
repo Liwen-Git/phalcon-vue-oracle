@@ -33,12 +33,19 @@
 <script>
     export default {
         name: "role-add",
+        props: {
+            role: {
+                type: Object,
+                required: true,
+            }
+        },
         data() {
             return {
                 tmpLoading: false,
                 form: {
+                    roleId: '',
                     roleName: '',
-                    status: '1',
+                    status: '',
                     remark: '',
                     actions: [],
                 },
@@ -58,15 +65,14 @@
             closeDialog() {
                 this.$emit('close');
                 this.$refs.form.resetFields();
-                this.$refs.tree.setCheckedKeys([]);
             },
             commit() {
                 this.$refs.form.validate(valid => {
                     if (valid) {
                         this.form.actions = this.$refs.tree.getCheckedNodes();
-                        api.post('role/add', this.form).then(() => {
-                            this.$message.success('角色添加成功');
-                            this.$emit('addSuccess');
+                        api.post('role/edit', this.form).then(() => {
+                            this.$message.success('角色编辑成功');
+                            this.$emit('editSuccess');
                             this.closeDialog();
                         })
                     }
@@ -76,12 +82,35 @@
                 this.tmpLoading = true;
                 api.get('role/action_menu').then(data => {
                     this.actionMenu = data;
+                    this.getSelectActionMenu(this.role.role_id);
                     this.tmpLoading = false;
                 })
+            },
+            getSelectActionMenu(roleId) {
+                api.get('role/select_action_menu', {roleId: roleId}).then(data => {
+                    this.form.actions = data;
+                    this.$refs.tree.setCheckedKeys(this.form.actions);
+                })
+            },
+            initForm() {
+                this.form.roleId = this.role.role_id;
+                this.form.roleName = this.role.role_name;
+                this.form.status = this.role.status;
+                this.form.remark = this.role.remark;
             }
         },
         created() {
+            this.initForm();
             this.getActionMenu();
+        },
+        mounted() {
+            console.log(this.form.actions);
+        },
+        watch: {
+            role() {
+                this.initForm();
+                this.getSelectActionMenu(this.role.role_id);
+            }
         }
     }
 </script>
