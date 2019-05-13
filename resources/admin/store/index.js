@@ -35,7 +35,6 @@ const stateLocalStoragePlugin = function (store) {
         store.commit('setUser', state.user);
         store.commit('setMenus', state.menus);
         store.commit('setRules', state.rules);
-        store.commit('setCurrentMenu', state.currentMenu);
     }
 
     store.subscribe((mutation, state) => {
@@ -55,7 +54,6 @@ export default new Vuex.Store({
         user: null,
         menus: [], // 用户的菜单列表(树型结构)
         rules: [], // 用户的权限列表(列表结构)
-        currentMenu: null,
     },
     mutations: {
         setGlobalLoading(state, loading) {
@@ -70,9 +68,6 @@ export default new Vuex.Store({
         },
         setRules(state, rules) {
             state.rules = rules;
-        },
-        setCurrentMenu(state, currentMenu) {
-            state.currentMenu = currentMenu;
         },
     },
     /** 官方推荐 异步操作放在 actions 中 */

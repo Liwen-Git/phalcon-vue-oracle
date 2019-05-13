@@ -14,7 +14,7 @@ const routes = [
         path: '/',
         component: Home,
         children: [
-            {path: 'welcome', component: Welcome, name: 'Welcome'},
+            {path: '/welcome', component: Welcome, name: 'Welcome'},
         ]
     },
 
@@ -22,10 +22,10 @@ const routes = [
         path: '/',
         component: Home,
         children: [
-            {path: 'user/index', component: User, name: 'User'},
-            {path: 'role/index', component: Role, name: 'Role'},
-            {path: 'menu/index', component: Menu, name: 'Menu'},
-            {path: 'operate/index', component: OperateLog, name: 'OperateLog'},
+            {path: '/user/index', component: User, name: 'User'},
+            {path: '/role/index', component: Role, name: 'Role'},
+            {path: '/menu/index', component: Menu, name: 'Menu'},
+            {path: '/operate/index', component: OperateLog, name: 'OperateLog'},
         ]
     },
 ];

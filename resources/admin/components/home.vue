@@ -26,12 +26,16 @@
             <left-menu :menus="menus"></left-menu>
             <!-- 主页面 内容部分 -->
             <el-main class="main-content">
-                <el-tabs class="tabs" v-model="activeTabName" @tab-remove="closeTab" type="border-card">
-                    <el-tab-pane v-for="item in tabList" :key="item.name" :name="item.name" label="item.label" :closable="item.closable"></el-tab-pane>
+                <el-tabs class="tabs" v-model="activeTabName" @tab-click="tabClick" @tab-remove="tabRemove" type="border-card">
+                    <el-tab-pane v-for="item in tabList" :key="item.name" :name="item.path" :label="item.name" :closable="item.closable">
+
+                    </el-tab-pane>
                 </el-tabs>
                 <el-col :span="24" class="main-col">
                     <transition name="fade" mode="out-in" appear>
-                        <router-view v-loading="globalLoading"></router-view>
+                        <keep-alive>
+                            <router-view v-loading="globalLoading"></router-view>
+                        </keep-alive>
                     </transition>
                 </el-col>
             </el-main>
@@ -53,6 +57,8 @@
         methods: {
             ...mapMutations('navTabs', [
                 'closeTab',
+                'addTab',
+                'setActiveTabName',
             ]),
             handleCommand(command) {
                 switch (command) {
@@ -74,6 +80,13 @@
                 }).catch(() => {
 
                 })
+            },
+            tabClick() {
+                this.$router.push(this.activeTabName);
+            },
+            tabRemove(route) {
+                this.closeTab(route);
+                this.$router.push(this.activeTabName);
             }
         },
         created() {
@@ -82,6 +95,15 @@
                 this.$message.warning('您尚未登录');
                 this.$router.replace('/login');
                 return ;
+            }
+        },
+        mounted() {
+            // 刷新时，以当前路由作为tab加入tabList
+            if (this.$route.path !== '/welcome') {
+                this.addTab({path: this.$route.path, name: this.$route.name});
+                this.setActiveTabName(this.$route.path);
+            } else {
+                // this.$router.push('/welcome');
             }
         },
         computed: {
@@ -105,6 +127,21 @@
         },
         components: {
             LeftMenu,
+        },
+        watch: {
+            '$route'(to) {
+                let flag = false;
+                for (let tab of this.tabList) {
+                    if (tab.name === to.name) {
+                        flag = true;
+                        this.setActiveTabName(to.path);
+                    }
+                }
+                if (!flag) {
+                    this.addTab({path: to.path, name: to.name});
+                    this.setActiveTabName(to.path);
+                }
+            }
         }
     }
 </script>
@@ -165,5 +202,13 @@
 
     .main-col {
         height: 100%;
+        margin-top: -30px;
     }
+
+    .tabs {
+        border: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
 </style>

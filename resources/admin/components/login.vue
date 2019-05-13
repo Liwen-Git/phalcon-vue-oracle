@@ -24,7 +24,7 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex';
+    import {mapState, mapActions, mapMutations} from 'vuex';
 
     export default {
         name: "login",
@@ -47,6 +47,12 @@
             }
         },
         methods: {
+            ...mapActions([
+                'storeUserAndMenus',
+            ]),
+            ...mapMutations('navTabs', [
+                'resetTabList',
+            ]),
             doLogin() {
                 this.$refs.form.validate(valid => {
                     if (valid) {
@@ -56,7 +62,8 @@
                                 menus: data.menus,
                                 rules: data.rules,
                             };
-                            this.$store.dispatch('storeUserAndMenus', res);
+                            this.storeUserAndMenus(res);
+                            this.resetTabList();
                             this.$router.push('/welcome');
                         })
                     }

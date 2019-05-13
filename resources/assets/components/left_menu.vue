@@ -2,12 +2,16 @@
     <el-menu
         text-color="#303133"
         active-text-color="#409EFF"
-        :default-active="currentMenu"
+        :default-active="$route.path"
         @select="change"
         :unique-opened="true"
         class="menu"
         :router="true"
     >
+        <el-menu-item index="/welcome">
+            <i class="el-icon-s-home"></i>
+            主页
+        </el-menu-item>
         <template v-for="secMenu in menus">
             <!-- 有子菜单 -->
             <el-submenu v-if="secMenu.sub && secMenu.sub.length > 0" :index="secMenu.menu_name">
@@ -25,7 +29,7 @@
 </template>
 
 <script>
-    import {mapMutations} from 'vuex';
+
     export default {
         name: "left_menu",
         props: {
@@ -40,19 +44,16 @@
             }
         },
         methods: {
-            ...mapMutations('navTabs',[
-                'addTab',
-            ]),
-            change(index, indexPath) {
-                this.addTab(indexPath);
+            change() {
+
             }
         },
     }
 </script>
 
 <style scoped>
-    .menu:not(.el-menu--collapse) {
-        width: 250px;
+    .menu {
+        width: 200px;
         min-height: 400px;
     }
 </style>
