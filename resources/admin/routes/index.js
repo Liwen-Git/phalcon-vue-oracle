@@ -7,6 +7,8 @@ import Role from '../components/system-management/role/role';
 import Menu from '../components/system-management/menu/menu';
 import OperateLog from '../components/system-management/operate-log/list';
 
+import AccountingSubjectList from '../components/basic-info/accounting-subject/list';
+
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
 
@@ -22,10 +24,18 @@ const routes = [
         path: '/',
         component: Home,
         children: [
-            {path: '/user/index', component: User, name: 'User'},
-            {path: '/role/index', component: Role, name: 'Role'},
-            {path: '/menu/index', component: Menu, name: 'Menu'},
-            {path: '/operate/index', component: OperateLog, name: 'OperateLog'},
+            {path: '/user/index', component: User, name: '用户管理'},
+            {path: '/role/index', component: Role, name: '角色管理'},
+            {path: '/menu/index', component: Menu, name: '菜单管理'},
+            {path: '/operate/index', component: OperateLog, name: '操作日志'},
+        ]
+    },
+
+    {
+        path: '/',
+        component: Home,
+        children: [
+            {path: '/subject/index', component: AccountingSubjectList, name: '会计科目'},
         ]
     },
 ];
