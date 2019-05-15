@@ -90,8 +90,8 @@ class BaseService extends Injectable
                 "status" => true,
                 "msg" => "获取成功",
                 "data" => [
-                    "total" => $response['total'] ? $response['total'] : count($response['data']),
-                    "list" => $response['data']
+                    "total" => !empty($response['total']) ? $response['total'] : (!empty($response['data']) ? count($response['data']) : 0),
+                    "list" => !empty($response['data']) ? $response['data'] : [],
                 ]
             ];
         }
@@ -161,5 +161,25 @@ class BaseService extends Injectable
         $log->debug($msg);
 
         return true;
+    }
+
+    /**
+     * 制作返回参数
+     * @param string $msg
+     * @param bool $status
+     * @param array $data
+     * @return array
+     */
+    public function makeBack($msg = '', $status = false, $data = [])
+    {
+        $arr = array(
+            'status' => $status,
+            'msg' => $msg,
+        );
+        if (!empty($data)) {
+            $arr['data'] = $data;
+        }
+        $this->writeLog(__FUNCTION__, $arr);
+        return $arr;
     }
 }

@@ -49,6 +49,23 @@ class SubjectService extends BaseService
         $param['page_index'] = (int)$page;
         $param['page_num'] = (int)$pageSize;
         $result = $this->postHttp('ledger', $param);
+        if (!$result['status']) {
+            return $this->makeBack('数据获取失败');
+        }
+        if($result['data']['total'] < 1){
+            return $this->makeBack("无数据");
+        }
+
+        return $this->makeBack("获取成功",true, $result['data']);
+    }
+
+    public function updateSubject($param)
+    {
+        $param['interface_type'] = 'updateSubjectCode';
+        $result = $this->postHttp('ledger', $param);
+        if (!$result['status']) {
+            return $this->makeBack('添加或修改科目时失败');
+        }
 
         return $result;
     }

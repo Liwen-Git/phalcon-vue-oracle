@@ -42,8 +42,8 @@
                 <el-table-column prop="parent_subject_name" label="父级科目名称"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="editSubject">编辑</el-button>
-                        <el-button type="text" size="small" @click="delSubject">删除</el-button>
+                        <el-button type="text" size="small" @click="editSubject(scope.row)">编辑</el-button>
+                        <el-button type="text" size="small" @click="delSubject(scope.row.subject_code)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -57,10 +57,20 @@
                     @size-change="changePageSize"
             ></el-pagination>
         </el-col>
+
+        <el-dialog title="添加科目" :visible.sync="addDialog" width="40%" :close-on-click-modal="false">
+            <subject-add :subjectLevelArr="subjectLevelArr" :subjectTypeArr="subjectTypeArr" @close="addDialog = false" @addSuccess="theSuccess"></subject-add>
+        </el-dialog>
+        <el-dialog title="编辑科目" :visible.sync="editDialog" width="40%" :close-on-click-modal="false">
+            <subject-edit :subjectLevelArr="subjectLevelArr" :subjectTypeArr="subjectTypeArr" :theSubject="theSubject" @close="editDialog = false" @editSuccess="theSuccess"></subject-edit>
+        </el-dialog>
     </page>
 </template>
 
 <script>
+    import SubjectAdd from './add';
+    import SubjectEdit from './edit';
+
     export default {
         name: "accounting-subject-list",
         data() {
@@ -82,6 +92,8 @@
                 list: [],
 
                 addDialog: false,
+                editDialog: false,
+                theSubject: null,
             }
         },
         methods: {
@@ -95,11 +107,25 @@
                 this.form.page = 1;
                 this.getList();
             },
-            editSubject() {
-
+            editSubject(row) {
+                this.theSubject = row;
+                this.editDialog = true;
             },
-            delSubject() {
-
+            delSubject(code) {
+                this.$confirm('确定删除吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    api.post('subject/delete', {subjectCode: code}).then(() => {
+                        this.$message.success('删除会计科目成功');
+                        this.getList();
+                    })
+                }).catch(() => {})
+            },
+            theSuccess() {
+                this.form.page = 1;
+                this.getList();
             },
             changePageSize(pageSize) {
                 this.form.page = 1;
@@ -120,6 +146,10 @@
         },
         created() {
             this.initThePage();
+        },
+        components: {
+            SubjectAdd,
+            SubjectEdit,
         }
     }
 </script>
