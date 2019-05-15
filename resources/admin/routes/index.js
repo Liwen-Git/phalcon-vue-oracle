@@ -8,6 +8,7 @@ import Menu from '../components/system-management/menu/menu';
 import OperateLog from '../components/system-management/operate-log/list';
 
 import AccountingSubjectList from '../components/basic-info/accounting-subject/list';
+import MerchantList from '../components/basic-info/merchant/list';
 
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
@@ -36,6 +37,7 @@ const routes = [
         component: Home,
         children: [
             {path: '/subject/index', component: AccountingSubjectList, name: '会计科目'},
+            {path: '/merchant/index', component: MerchantList, name: '商户信息'},
         ]
     },
 ];
