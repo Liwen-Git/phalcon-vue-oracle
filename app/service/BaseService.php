@@ -151,9 +151,7 @@ class BaseService extends Injectable
         $log = $this->log;
 
         $log_str = is_string($data) ? $data : json_encode($data, JSON_UNESCAPED_UNICODE);
-        $msg = vsprintf('[%s]: ' . $log_str . PHP_EOL, array(
-            $logTitle
-        ));
+        $msg = "[$logTitle]: " . $log_str . PHP_EOL;
         $encode = mb_detect_encoding($msg, array("ASCII", "UTF-8", "GB2312", "GBK", "BIG5"));
         if ($encode != "UTF-8") {
             $msg = mb_convert_encoding($msg, "UTF-8", $encode);

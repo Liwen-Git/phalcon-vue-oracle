@@ -9,6 +9,7 @@ import OperateLog from '../components/system-management/operate-log/list';
 
 import AccountingSubjectList from '../components/basic-info/accounting-subject/list';
 import MerchantList from '../components/basic-info/merchant/list';
+import AgentList from '../components/basic-info/agent/list';
 
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
@@ -38,6 +39,7 @@ const routes = [
         children: [
             {path: '/subject/index', component: AccountingSubjectList, name: '会计科目'},
             {path: '/merchant/index', component: MerchantList, name: '商户信息'},
+            {path: '/agent/index', component: AgentList, name: '代理商信息'},
         ]
     },
 ];
