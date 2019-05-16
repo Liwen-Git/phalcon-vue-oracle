@@ -30,7 +30,7 @@
                 <el-form-item>
                     <el-button type="primary" @click="search">搜索</el-button>
                 </el-form-item>
-                <el-button type="success" size="small" class="fr">添加</el-button>
+                <el-button type="success" size="small" class="fr" @click="addDialog = true">添加</el-button>
             </el-form>
         </el-col>
         <el-col>
@@ -87,10 +87,16 @@
                     @size-change="changePageSize"
             ></el-pagination>
         </el-col>
+
+        <el-dialog title="添加渠道" :visible.sync="addDialog" :close-on-click-modal="false" width="40%">
+            <channel-add :businessTypes="businessTypes"></channel-add>
+        </el-dialog>
     </page>
 </template>
 
 <script>
+    import ChannelAdd from './add';
+
     export default {
         name: "channel-list",
         data() {
@@ -107,6 +113,8 @@
                 businessTypes: [],
                 total: 0,
                 list: [],
+
+                addDialog: false,
             }
         },
         methods: {
@@ -136,6 +144,9 @@
         },
         created() {
             this.getBusinessTypesAndInit();
+        },
+        components: {
+            ChannelAdd,
         }
     }
 </script>
