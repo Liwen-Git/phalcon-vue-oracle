@@ -93,6 +93,9 @@ class ChannelController extends ControllerBase
         ]);
     }
 
+    /**
+     * 添加渠道
+     */
     public function addAction()
     {
         $post = $this->request->getJsonRawBody(true);

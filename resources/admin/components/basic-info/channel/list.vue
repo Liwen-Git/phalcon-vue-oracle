@@ -75,7 +75,12 @@
                 <el-table-column prop="create_time" label="创建时间"></el-table-column>
                 <el-table-column prop="update_time" label="更新时间"></el-table-column>
                 <el-table-column prop="oper_name" label="最近操作人"></el-table-column>
-                <el-table-column label="操作"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="editChannel(scope.row)">编辑</el-button>
+                        <el-button type="text" @click="deleteChannel(scope.row.fee_rate_seq_no)">删除</el-button>
+                    </template>
+                </el-table-column>
             </el-table>
             <el-pagination
                     layout="sizes, total, prev, pager, next"
@@ -91,11 +96,16 @@
         <el-dialog title="添加渠道" :visible.sync="addDialog" :close-on-click-modal="false" :show-close="false" width="40%">
             <channel-add :businessTypes="businessTypes" @close="addDialog = false" @addSuccess="theSuccess"></channel-add>
         </el-dialog>
+
+        <el-dialog title="编辑渠道" :visible.sync="editDialog" :close-on-click-modal="false" :show-close="false" width="40%">
+            <channel-edit :businessTypes="businessTypes" :theChannel="theChannel" @close="editDialog = false" @editSuccess="theSuccess"></channel-edit>
+        </el-dialog>
     </page>
 </template>
 
 <script>
     import ChannelAdd from './add';
+    import ChannelEdit from './edit';
 
     export default {
         name: "channel-list",
@@ -115,6 +125,8 @@
                 list: [],
 
                 addDialog: false,
+                theChannel: null,
+                editDialog: false,
             }
         },
         methods: {
@@ -143,6 +155,13 @@
             theSuccess() {
                 this.form.page = 1;
                 this.getList();
+            },
+            editChannel(row) {
+                this.theChannel = row;
+                this.editDialog = true;
+            },
+            deleteChannel(code) {
+
             }
         },
         created() {
@@ -150,6 +169,7 @@
         },
         components: {
             ChannelAdd,
+            ChannelEdit,
         }
     }
 </script>
