@@ -2,9 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Library\OperateLogAction;
 use App\Library\Result;
+use App\Library\ResultCode;
+use App\Models\OperateLog;
+use App\Service\BankService;
 use App\Service\BusinessTypeService;
 use App\Service\ChannelService;
+use App\Service\OperateLogService;
 
 class ChannelController extends ControllerBase
 {
@@ -19,6 +24,9 @@ class ChannelController extends ControllerBase
         Result::success($result['data']);
     }
 
+    /**
+     * 列表
+     */
     public function listAction()
     {
         $get = $this->request->get();
@@ -57,5 +65,67 @@ class ChannelController extends ControllerBase
             'list' => $list,
             'total' => $total,
         ]);
+    }
+
+    /**
+     * 银行名称 搜索
+     */
+    public function queryBankInfoAction()
+    {
+        $get = $this->request->get();
+        $where = [];
+        if (!empty($get['bank_name'])) {
+            $where['bank_name'] = $get['bank_name'];
+        }
+        $bank = new BankService();
+        $result = $bank->bankList($where, 1, 100);
+
+        $list = [];
+        $total = 0;
+        if ($result['status']){
+            $list = $result['data']['list'];
+            $total = $result['data']['total'];
+        }
+
+        Result::success([
+            'list' => $list,
+            'total' => $total,
+        ]);
+    }
+
+    public function addAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        if (empty($post['business_types'])) {
+            Result::error(ResultCode::UNKNOWN, '业务大类不允许为空');
+        }
+        $data = [
+            'chl_name'              => $post['chl_name'],
+            'sys_chl_code'          => $post['sys_chl_code'],
+            "channel_merchant_id"   => $post['channel_merchant_id'],
+            "bank_code"             => $post['bank_code'],
+            'busi_type'             => $post['business_types'][0],
+            'second_busi_type'      => !empty($post['business_types'][1]) ? $post['business_types'][1] : '',
+            'oper_name'             => $this->user['name'],
+            "bank_card_type"        => $post['bank_card_type'],
+            'charge_method'         => $post['fee_settle_type'],
+            'charge_type'           => $post['charge_type'],
+            'memo'                  => $post['memo'],
+            'service_start_time'    => $post['service_start_time'],
+            'service_end_time'      => $post['service_end_time'],
+            'list'                  => $post['list'],
+        ];
+
+        $channel = new ChannelService();
+        $result = $channel->addChannel($data);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::CHANNELADD, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_INSERT_FAIL, '渠道费率增加失败');
+        }
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::CHANNELADD, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
     }
 }

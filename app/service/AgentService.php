@@ -18,13 +18,13 @@ class AgentService extends BaseService
         $param['page_num'] = (int)$pageSize;
         $result = $this->postHttp('ledger', $param);
         if (!$result['status']) {
-            return $this->makeBack('数据获取失败');
+            return $this->makeBack('代理商列表数据获取失败');
         }
         if ($result['data']['total'] < 1 ){
-            return $this->makeBack("无数据");
+            return $this->makeBack("代理商列表无数据");
         }
 
-        return $this->makeBack("获取成功",true, $result['data']);
+        return $this->makeBack("代理商列表获取成功",true, $result['data']);
     }
 
     /**
@@ -41,12 +41,12 @@ class AgentService extends BaseService
         $param['page_num'] = (int)$pageSize;
         $result = $this->postHttp('ledger', $param);
         if (!$result['status']) {
-            $this->makeBack('数据获取失败');
+            $this->makeBack('代理商 合同费率信息数据获取失败');
         }
         if ($result['data']['total'] < 1) {
-            $this->makeBack('无数据');
+            $this->makeBack('代理商 合同费率信息无数据');
         }
 
-        return $this->makeBack('获取成功', true, $result['data']);
+        return $this->makeBack('代理商 合同费率信息获取成功', true, $result['data']);
     }
 }

@@ -18,7 +18,7 @@ class BusinessTypeService extends BaseService
         $result = $this->postHttp('ledger', $param);
 
         if (!$result['status']) {
-            return $this->makeBack('获取数据失败');
+            return $this->makeBack('获取数据失败[业务类型]');
         }
         if ($result['data']['total'] < 1) {
             return $this->makeBack('业务类型无数据');
@@ -48,6 +48,6 @@ class BusinessTypeService extends BaseService
             $res[] = $tmp;
         }
 
-        return $this->makeBack("获取成功", true, $res);
+        return $this->makeBack("获取成功[业务类型]", true, $res);
     }
 }

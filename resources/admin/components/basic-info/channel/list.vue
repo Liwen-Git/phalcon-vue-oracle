@@ -88,8 +88,8 @@
             ></el-pagination>
         </el-col>
 
-        <el-dialog title="添加渠道" :visible.sync="addDialog" :close-on-click-modal="false" width="40%">
-            <channel-add :businessTypes="businessTypes"></channel-add>
+        <el-dialog title="添加渠道" :visible.sync="addDialog" :close-on-click-modal="false" :show-close="false" width="40%">
+            <channel-add :businessTypes="businessTypes" @close="addDialog = false" @addSuccess="theSuccess"></channel-add>
         </el-dialog>
     </page>
 </template>
@@ -126,7 +126,6 @@
                 })
             },
             getList() {
-                console.log(JSON.stringify(this.form));
                 api.get('channel/list', this.form).then(data => {
                     this.list = data.list;
                     this.total = data.total;
@@ -138,6 +137,10 @@
             },
             changePageSize(size) {
                 this.form.page_size = size;
+                this.form.page = 1;
+                this.getList();
+            },
+            theSuccess() {
                 this.form.page = 1;
                 this.getList();
             }
