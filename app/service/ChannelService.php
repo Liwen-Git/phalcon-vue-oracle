@@ -38,4 +38,20 @@ class ChannelService extends BaseService
         }
         return $this->makeBack('添加渠道成功', true, $result['data']);
     }
+
+    /**
+     * 更新渠道费率
+     * @param array $param
+     * @return array
+     */
+    public function updateChannel(array $param)
+    {
+        $param['interface_type'] = "updatechannelfeerate";
+        $result = $this->postHttp('ledger', $param);
+        if (!$result['status']) {
+            return $this->makeBack("更新渠道费率失败");
+        }
+
+        return $this->makeBack("更新渠道费率成功", true, $result['data']);
+    }
 }

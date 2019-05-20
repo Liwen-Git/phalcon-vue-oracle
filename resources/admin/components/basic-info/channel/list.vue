@@ -161,7 +161,16 @@
                 this.editDialog = true;
             },
             deleteChannel(code) {
-
+                this.$confirm('确定删除吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    api.post('channel/delete', {fee_rate_seq_no: code}).then(() => {
+                        this.$message.success('渠道费率删除成功');
+                        this.getList();
+                    })
+                }).catch(() => {})
             }
         },
         created() {

@@ -131,4 +131,67 @@ class ChannelController extends ControllerBase
 
         Result::success();
     }
+
+    /**
+     * 编辑
+     */
+    public function editAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $data = [
+            'fee_rate_seq_no'       => $post['fee_rate_seq_no'],
+            'channel_merchant_id'   => $post['channel_merchant_id'],
+            'bank_card_type'        => $post['bank_card_type'],
+            'charge_method'         => $post['fee_settle_type'],
+            'charge_type'           => $post['charge_type'],
+            'service_start_time'    => $post['service_start_time'],
+            'service_end_time'      => $post['service_end_time'],
+            'valid'                 => ($post['state'] == 0 || $post['state'] == 1) ? $post['state'] : '',
+            'fee_rate_type'         => $post['fee_rate_type'],
+            'left_value_amt'        => $post['left_value_amt'],
+            'right_value_amt'       => $post['right_value_amt'],
+            'fee_rate'              => $post['fee_rate'],
+            'fee_fixed'             => $post['fee_fixed'],
+            'min_fee_amt'           => $post['min_fee_amt'],
+            'max_fee_amt'           => $post['max_fee_amt'],
+            'oper_name'             => $this->user['name'],
+        ];
+
+        $channel = new ChannelService();
+        $result = $channel->updateChannel($data);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::CHANNELEDIT, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_INSERT_FAIL, '渠道费率编辑失败');
+        }
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::CHANNELEDIT, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
+    }
+
+    /**
+     * 删除
+     */
+    public function deleteAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $data = [
+            'fee_rate_seq_no'       => $post['fee_rate_seq_no'],
+            'valid'                 => '0',
+            'oper_name'             => $this->user['name'],
+        ];
+
+        $channel = new ChannelService();
+        $result = $channel->updateChannel($data);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::CHANNELDEL, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_INSERT_FAIL, '渠道费率删除失败');
+        }
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::CHANNELDEL, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
+    }
 }

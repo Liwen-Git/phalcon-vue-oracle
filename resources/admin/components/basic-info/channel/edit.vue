@@ -3,7 +3,7 @@
         <el-form-item prop="chl_name" label="渠道编号">
             <el-input type="text" v-model="form.chl_name" placeholder="请输入渠道编号" disabled class="w-200"></el-input>
         </el-form-item>
-        <el-form-item prop="business_type" label="业务类型">
+        <el-form-item prop="busi_type" label="业务类型">
             <el-input type="text" v-model="form.busi_type" disabled class="w-200"></el-input>
         </el-form-item>
         <el-form-item prop="sys_chl_code" label="渠道名称">
@@ -215,11 +215,10 @@
             commit() {
                 this.$refs.form.validate(valid => {
                     if (valid) {
-                        console.log(this.form);return;
                         api.post('channel/edit', this.form).then(() => {
-                            this.$message.success('渠道费率增加成功');
+                            this.$message.success('渠道费率编辑成功');
                             this.closeDialog();
-                            this.$emit('addSuccess');
+                            this.$emit('editSuccess');
                         })
                     }
                 })
