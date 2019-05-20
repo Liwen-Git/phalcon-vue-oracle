@@ -14,6 +14,8 @@ import ChannelList from '../components/basic-info/channel/list';
 import BusinessTypeList from '../components/basic-info/business-type/list';
 import AccountingEntryList from '../components/basic-info/accounting-entry/list';
 
+import BalanceList from '../components/financial-management/balance/list';
+
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
 
@@ -46,6 +48,14 @@ const routes = [
             {path: '/channel/index', component: ChannelList, name: '渠道信息'},
             {path: '/busitype/index', component: BusinessTypeList, name: '业务类型'},
             {path: '/entry/index', component: AccountingEntryList, name: '会计分录'},
+        ]
+    },
+
+    {
+        path: '/',
+        component: Home,
+        children: [
+            {path: '/balance/index', component: BalanceList, name: '余额查询'},
         ]
     },
 ];
