@@ -11,6 +11,7 @@ import AccountingSubjectList from '../components/basic-info/accounting-subject/l
 import MerchantList from '../components/basic-info/merchant/list';
 import AgentList from '../components/basic-info/agent/list';
 import ChannelList from '../components/basic-info/channel/list';
+import BusinessTypeList from '../components/basic-info/business-type/list';
 
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
@@ -42,6 +43,7 @@ const routes = [
             {path: '/merchant/index', component: MerchantList, name: '商户信息'},
             {path: '/agent/index', component: AgentList, name: '代理商信息'},
             {path: '/channel/index', component: ChannelList, name: '渠道信息'},
+            {path: '/busitype/index', component: BusinessTypeList, name: '业务类型'},
         ]
     },
 ];

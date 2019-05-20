@@ -163,7 +163,7 @@ class ChannelController extends ControllerBase
         $log = new OperateLogService();
         if (!$result['status']){
             $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::CHANNELEDIT, OperateLog::STATUS_FAILED);
-            Result::error(ResultCode::DB_INSERT_FAIL, '渠道费率编辑失败');
+            Result::error(ResultCode::DB_UPDATE_FAIL, '渠道费率编辑失败');
         }
         $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::CHANNELEDIT, OperateLog::STATUS_SUCCESS);
 
@@ -188,7 +188,7 @@ class ChannelController extends ControllerBase
         $log = new OperateLogService();
         if (!$result['status']){
             $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::CHANNELDEL, OperateLog::STATUS_FAILED);
-            Result::error(ResultCode::DB_INSERT_FAIL, '渠道费率删除失败');
+            Result::error(ResultCode::DB_DELETE_FAIL, '渠道费率删除失败');
         }
         $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::CHANNELDEL, OperateLog::STATUS_SUCCESS);
 

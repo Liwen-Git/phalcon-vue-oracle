@@ -50,4 +50,40 @@ class BusinessTypeService extends BaseService
 
         return $this->makeBack("获取成功[业务类型]", true, $res);
     }
+
+    /**
+     * 业务类型列表
+     * @param array $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function getList(array $param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = 'queryBusiType';
+        $param['page_index'] = (int)$page;
+        $param['page_num'] = (int)$pageSize;
+        $result = $this->postHttp('ledger', $param);
+        if (!$result['status']) {
+            return $this->makeBack('数据获取失败[业务类型列表]');
+        }
+
+        return $this->makeBack('获取成功[业务类型列表]', true, $result['data']);
+    }
+
+    /**
+     * 添加、编辑业务类型
+     * @param $data
+     * @return array
+     */
+    public function addAndEditBusinessType($data)
+    {
+        $data['interface_type'] = 'updateBusiType';
+        $result = $this->postHttp('ledger', $data);
+        if (!$result['status']) {
+            return $this->makeBack('添加或编辑业务类型失败');
+        }
+
+        return $this->makeBack('添加或编辑业务类型成功', true, $result['data']);
+    }
 }
