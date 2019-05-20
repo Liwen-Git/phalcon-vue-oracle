@@ -73,4 +73,36 @@ class SubjectService extends BaseService
 
         return $result;
     }
+
+    /**
+     * @param $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function getSubjectSelect($param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = "querySubjectCode";
+        $param['page_index'] = (int)$page;
+        $param['page_num'] = (int)$pageSize;
+        $result = $this->postHttp('ledger', $param);
+        if (!$result['status']) {
+            return $this->makeBack('数据获取失败[会计科目选择列表]');
+        }
+        if($result['data']['total'] < 1){
+            return $this->makeBack("无数据[会计科目选择列表]");
+        }
+
+        $res = [];
+        $list = $result['data']['list'];
+        $subject_codes = array_column($list, 'subject_code');
+        array_multisort($subject_codes, SORT_ASC, $list);
+        foreach ($list as $k => $v){
+            $v['parent_subject'] = $v['subject_level'] == '1' ? "0" : $v['parent_subject'];
+            $v['code_name'] = $v['subject_code'] . " " . $v['subject_name'];
+            $res[$k] = $v;
+        }
+
+        return $this->makeBack("获取成功[会计科目选择列表]", true, $res);
+    }
 }
