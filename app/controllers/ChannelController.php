@@ -194,4 +194,31 @@ class ChannelController extends ControllerBase
 
         Result::success();
     }
+
+    /**
+     * 搜索渠道信息
+     */
+    public function queryChannelInfoAction()
+    {
+        $get = $this->request->get();
+        $where = [];
+        if (!empty($get['acc_name'])) {
+            $where['acc_name'] = $get['acc_name'];
+        }
+
+        $channel = new ChannelService();
+        $result = $channel->queryChannelInfo($where, 1, 100);
+
+        $list = [];
+        $total = 0;
+        if ($result['status']){
+            $list = $result['data']['list'];
+            $total = $result['data']['total'];
+        }
+
+        Result::success([
+            'list' => $list,
+            'total' => $total,
+        ]);
+    }
 }

@@ -310,7 +310,7 @@
         },
         created() {
             this.form.service_start_time = moment().format("YYYY-MM-DD");
-            this.form.service_end_time = moment().add(1, 'month').format("YYYY-MM-DD 23:59:59");
+            this.form.service_end_time = moment().add(1, 'month').format("YYYY-MM-DD");
         },
         watch: {
             'form.list': {

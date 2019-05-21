@@ -12,7 +12,7 @@ class ChannelService extends BaseService
      * @param $pageSize
      * @return array
      */
-    public function getList(array $param, $page, $pageSize)
+    public function getList(array $param, $page = 1, $pageSize = 10)
     {
         $param['interface_type'] = 'querychllist';
         $param['page_index'] = (int)$page;
@@ -53,5 +53,25 @@ class ChannelService extends BaseService
         }
 
         return $this->makeBack("更新渠道费率成功", true, $result['data']);
+    }
+
+    /**
+     * 搜索渠道信息
+     * @param array $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function queryChannelInfo(array $param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = "queryChlInfo";
+        $param['page_index'] = (int)$page;
+        $param['page_num'] = (int)$pageSize;
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[搜索渠道信息]");
+        }
+
+        return $this->makeBack("获取成功[搜索渠道信息]", true, $result['data']);
     }
 }

@@ -113,4 +113,45 @@ class BalanceController extends ControllerBase
 
         Result::success();
     }
+
+    /**
+     * 手工记账 列表
+     */
+    public function queryManualListAction()
+    {
+        $get = $this->request->get();
+        $page = $get['page'] ?: 1;
+        $pageSize = $get['page_size'] ?: 10;
+
+        $where = [];
+        if ($get['acc_inc']) {
+            $where['acc_inc'] = $get['acc_inc'];
+        }
+        if ($get['query_start_date']) {
+            $where['query_start_date'] = $get['query_start_date'];
+        }
+        if ($get['query_end_date']) {
+            $where['query_end_date'] = $get['query_end_date'];
+        }
+        if ($get['second_busi_type']) {
+            $where['second_busi_type'] = $get['second_busi_type'];
+        }
+        if ($get['state']) {
+            $where['state'] = $get['state'];
+        }
+
+        $balance = new BalanceService();
+        $result = $balance->getQueryManualList($where, $page, $pageSize);
+
+        $list = [];
+        $total = 0;
+        if ($result['status']) {
+            $list = $result['data']['list'];
+            $total = $result['data']['total'];
+        }
+        Result::success([
+            'list' => $list,
+            'total' => $total,
+        ]);
+    }
 }

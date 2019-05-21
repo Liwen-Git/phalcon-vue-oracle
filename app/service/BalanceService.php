@@ -39,4 +39,24 @@ class BalanceService extends BaseService
 
         return $this->makeBack("获取成功[余额冻结/解冻]", true, $result['data']);
     }
+
+    /**
+     * 手工记账查询
+     * @param array $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function getQueryManualList(array $param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = "queryManual";
+        $param['page_index'] = (int)$page;
+        $param['page_num'] = (int)$pageSize;
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[手工记账查询]");
+        }
+
+        return $this->makeBack("获取成功[手工记账查询]", true, $result['data']);
+    }
 }
