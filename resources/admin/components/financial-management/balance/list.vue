@@ -43,10 +43,86 @@
                 <el-button type="primary" @click="search">查询</el-button>
             </el-form-item>
         </el-form>
+        <el-table :data="list" stripe>
+            <el-table-column prop="merchant_id" label="商户号"></el-table-column>
+            <el-table-column prop="merchant_name" label="商户名称"></el-table-column>
+            <el-table-column prop="merchant_type" label="商户类型">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.merchant_type == '1'">商户</span>
+                    <span v-else>代理商</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="available_amount" label="可用余额账户">
+                <template slot-scope="scope">
+                    {{ (scope.row.available_amount / 100).toFixed(2) }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="settlement_amount" label="待结算金额">
+                <template slot-scope="scope">
+                    {{ (scope.row.settlement_amount / 100).toFixed(2) }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="withdraw_deposit_amount" label="提现中金额">
+                <template slot-scope="scope">
+                    {{ (scope.row.withdraw_deposit_amount / 100).toFixed(2) }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="freezing_amount" label="冻结中金额">
+                <template slot-scope="scope">
+                    {{ (scope.row.freezing_amount / 100).toFixed(2) }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="refund_amount" label="退款中金额">
+                <template slot-scope="scope">
+                    {{ (scope.row.refund_amount / 100).toFixed(2) }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="deposit_amount" label="保证金">
+                <template slot-scope="scope">
+                    {{ (scope.row.deposit_amount / 100).toFixed(2) }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="prestore_amount" label="预存款金额">
+                <template slot-scope="scope">
+                    {{ (scope.row.prestore_amount / 100).toFixed(2) }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="shared_amount" label="分润金额">
+                <template slot-scope="scope">
+                    {{ (scope.row.shared_amount / 100).toFixed(2) }}
+                </template>
+            </el-table-column>
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button type="text" @click="frozen(scope.row)">冻结</el-button>
+                    <el-button type="text" @click="unfrozen(scope.row)">解冻</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination
+                layout="sizes, total, prev, pager, next"
+                :page-size="form.page_size"
+                :total="total"
+                :current-page.sync="form.page"
+                @current-change="getList"
+                :page-sizes="[10, 50, 100, 200]"
+                @size-change="changePageSize"
+        ></el-pagination>
+
+        <el-dialog title="金额冻结" :visible.sync="frozenDialog" :close-on-click-modal="false" width="25%">
+            <balance-frozen :theBalance="theBalance" @close="frozenDialog = false" @frozenSuccess="theSuccess"></balance-frozen>
+        </el-dialog>
+
+        <el-dialog title="金额解冻" :visible.sync="unfrozenDialog" :close-on-click-modal="false" width="25%">
+            <balance-unfrozen :theBalance="theBalance" @close="unfrozenDialog = false" @unfrozenSuccess="theSuccess"></balance-unfrozen>
+        </el-dialog>
     </page>
 </template>
 
 <script>
+    import BalanceFrozen from './frozen';
+    import BalanceUnfrozen from './unfrozen';
+
     export default {
         name: "balance-list",
         data() {
@@ -68,6 +144,10 @@
                 merchantOptions: [],
                 theAgentLoading: false,
                 theMerchantLoading: false,
+
+                frozenDialog: false,
+                unfrozenDialog: false,
+                theBalance: null,
             }
         },
         methods: {
@@ -97,6 +177,37 @@
                     this.merchantOptions = [];
                 }
             },
+            getList() {
+                api.get('balance/list', this.form).then(data => {
+                    this.list = data.list;
+                    this.total = data.total;
+                })
+            },
+            search() {
+                this.form.page = 1;
+                this.getList();
+            },
+            changePageSize(size) {
+                this.form.page_size = size;
+                this.form.page = 1;
+                this.getList();
+            },
+            frozen(row) {
+                this.theBalance = row;
+                this.frozenDialog = true;
+            },
+            theSuccess() {
+                this.form.page = 1;
+                this.getList();
+            },
+            unfrozen(row) {
+                this.theBalance = row;
+                this.unfrozenDialog = true;
+            }
+        },
+        components: {
+            BalanceFrozen,
+            BalanceUnfrozen,
         }
     }
 </script>
