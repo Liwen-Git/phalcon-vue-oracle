@@ -84,7 +84,7 @@
         ></el-pagination>
 
         <el-dialog title="手工记账录入" :visible.sync="addDialog" :close-on-click-modal="false" :show-close="false">
-            <manual-add></manual-add>
+            <manual-add @close="addDialog = false" @addSuccess="theSuccess"></manual-add>
         </el-dialog>
     </page>
 </template>
@@ -112,7 +112,7 @@
                 auditDialog: false,
                 theAccInc: '',
 
-                addDialog: true,
+                addDialog: false,
             }
         },
         methods: {
@@ -134,6 +134,10 @@
             audit(inc) {
                 this.theAccInc = inc;
                 this.auditDialog = true;
+            },
+            theSuccess() {
+                this.form.page = 1;
+                this.getList();
             }
         },
         created() {

@@ -59,4 +59,36 @@ class BalanceService extends BaseService
 
         return $this->makeBack("获取成功[手工记账查询]", true, $result['data']);
     }
+
+    /**
+     * 查询虚户余额
+     * @param $param
+     * @return array
+     */
+    public function queryVirtualBalance($param)
+    {
+        $param['interface_type'] = "queryVirtualBal";
+        $res = $this->postHttp("ledger", $param, '1');
+        if (!$res['status']){
+            return $this->makeBack("数据获取失败[查询虚户余额]");
+        }
+
+        return $this->makeBack("获取成功[查询虚户余额]", true, $res['data']);
+    }
+
+    /**
+     * 手工记账录入
+     * @param array $param
+     * @return array
+     */
+    public function addManual(array $param)
+    {
+        $param['interface_type'] = "updateManual";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[手工记账录入]");
+        }
+
+        return $this->makeBack("获取成功[手工记账录入]", true, $result['data']);
+    }
 }

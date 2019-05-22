@@ -40,10 +40,11 @@ class SubjectController extends ControllerBase
         $page = $get['page'] ?: 1;
         $pageSize = $get['pageSize'] ?: 10;
         $param = [];
-        if ($get['subjectCode']) $param['subject_code'] = $get['subjectCode'];
-        if ($get['subjectName']) $param['subject_name'] = $get['subjectName'];
+        if (!empty($get['subjectCode'])) $param['subject_code'] = $get['subjectCode'];
+        if (!empty($get['subjectName'])) $param['subject_name'] = $get['subjectName'];
         if (!empty($get['subjectLevel'])) $param['subject_level'] = $get['subjectLevel'];
         if (!empty($get['subjectType'])) $param['subject_type'] = $get['subjectType'];
+        if (!empty($get['subject_relationship_property'])) $param['subject_relationship_property'] = $get['subject_relationship_property'];
 
         $subjectService = new SubjectService();
         $result = $subjectService->getList($param, $page, $pageSize);

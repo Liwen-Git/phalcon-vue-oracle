@@ -2,12 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Library\Common;
 use App\Library\OperateLogAction;
 use App\Library\Result;
 use App\Library\ResultCode;
 use App\Models\OperateLog;
 use App\Service\BalanceService;
 use App\Service\OperateLogService;
+use App\Service\SubjectService;
 
 class BalanceController extends ControllerBase
 {
@@ -153,5 +155,81 @@ class BalanceController extends ControllerBase
             'list' => $list,
             'total' => $total,
         ]);
+    }
+
+    /**
+     * 手工录入时 科目下拉列表
+     */
+    public function subjectSelectAction()
+    {
+        $subject = new SubjectService();
+        $result = $subject->getSubjectSelect([], 1, 1000);
+        $arr = Common::listToTree($result['data'], 0, 'subject_code', 'parent_subject', 'child');
+
+        Result::success($arr);
+    }
+
+    /**
+     * 查询虚户余额
+     */
+    public function queryVirtualBalanceAction()
+    {
+        $get = $this->request->get();
+        $balance = new BalanceService();
+        $result = $balance->queryVirtualBalance($get);
+
+        $data = [];
+        if ($result['status']) {
+            $data = $result['data'];
+        }
+        Result::success(['data' => $data]);
+    }
+
+    /**
+     * 手工记账录入
+     */
+    public function addManualAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        if ($post['second_busi_type'] == '05') {
+            foreach ($post['list'] as &$item) {
+                if ($item['acc_type'] == '4') {
+                    $len = count($item['subject_codes']);
+                    $item['subject_code'] = $item['subject_codes'][$len - 1];
+                }
+                $item['acc_amount'] = intval($item['acc_amount'] * 100);
+            }
+
+            $data = [];
+            $data['second_busi_type'] = $post['second_busi_type'];
+            $data['oper_name'] = $this->user['name'];
+            $data['verify_name'] = $this->user['name'];
+            $data['remark'] = $post['remark'];
+            $data['data'] = $post['list'];
+
+            $balance = new BalanceService();
+            $result = $balance->addManual($data);
+        } else {
+            $data = [];
+            $data['second_busi_type'] = $post['second_busi_type'];
+            $data['oper_name'] = $this->user['name'];
+            $data['verify_name'] = $this->user['name'];
+            $data['remark'] = $post['remark'];
+            $data['data'][0]['acc_type'] = $post['acc_type'];
+            $data['data'][0]['acc_id'] = $post['acc_id'];
+            $data['data'][0]['acc_amount'] = intval($post['acc_amount'] * 100);
+
+            $balance = new BalanceService();
+            $result = $balance->addManual($data);
+        }
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::MANUALADD, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_INSERT_FAIL, '手工记账录入失败');
+        }
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::MANUALADD, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
     }
 }
