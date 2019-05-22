@@ -69,7 +69,7 @@
             <el-table-column prop="verify_name" label="审核操作员"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="audit(scope.row.acc_inc)">审核</el-button>
+                    <el-button type="text" @click="audit(scope.row.acc_inc)">审核</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -86,11 +86,16 @@
         <el-dialog title="手工记账录入" :visible.sync="addDialog" :close-on-click-modal="false" :show-close="false">
             <manual-add @close="addDialog = false" @addSuccess="theSuccess"></manual-add>
         </el-dialog>
+
+        <el-dialog title="手工记账审核" :visible.sync="auditDialog" :close-on-click-modal="false">
+            <manual-audit :theAccInc="theAccInc" @close="auditDialog = false" @success="theSuccess"></manual-audit>
+        </el-dialog>
     </page>
 </template>
 
 <script>
     import ManualAdd from './add';
+    import ManualAudit from './audit';
 
     export default {
         name: "query-manual-list",
@@ -143,9 +148,11 @@
         created() {
             this.form.query_start_date = moment().format("YYYY-MM-DD");
             this.form.query_end_date = moment().add(1, 'month').format("YYYY-MM-DD");
+            this.getList();
         },
         components: {
             ManualAdd,
+            ManualAudit,
         }
     }
 </script>

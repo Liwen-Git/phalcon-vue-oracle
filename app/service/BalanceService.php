@@ -91,4 +91,36 @@ class BalanceService extends BaseService
 
         return $this->makeBack("获取成功[手工记账录入]", true, $result['data']);
     }
+
+    /**
+     * 手工记账审核查询
+     * @param array $param
+     * @return array
+     */
+    public function checkManualList(array $param)
+    {
+        $param['interface_type'] = "queryChkManual";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[手工记账审核查询]");
+        }
+
+        return $this->makeBack("获取成功[手工记账审核查询]", true, $result['data']);
+    }
+
+    /**
+     * 手工记账审核
+     * @param $param
+     * @return array
+     */
+    public function auditManual($param)
+    {
+        $param['interface_type'] = "verifyManual";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[手工记账审核]");
+        }
+
+        return $this->makeBack("获取成功[手工记账审核]", true, $result['data']);
+    }
 }

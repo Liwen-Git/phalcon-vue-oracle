@@ -232,4 +232,53 @@ class BalanceController extends ControllerBase
 
         Result::success();
     }
+
+    /**
+     * 手工记账审核列表
+     */
+    public function getCheckManualListAction()
+    {
+        $get = $this->request->get();
+        $where = [];
+        $where['acc_inc'] = $get['acc_inc'];
+
+        $balance = new BalanceService();
+        $result = $balance->checkManualList($where);
+
+        $list = [];
+        $total = 0;
+        if ($result['status']) {
+            $list = $result['data']['list'];
+            $total = $result['data']['total'];
+        }
+        Result::success([
+            'list' => $list,
+            'total' => $total,
+        ]);
+    }
+
+    /**
+     * 手工记账审核
+     */
+    public function manualAuditAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        if (empty($post['acc_inc'])) {
+            Result::error(ResultCode::PARAMS_INVALID, '流水号不允许为空');
+        }
+        if (empty($post['verify_state'])) {
+            Result::error(ResultCode::PARAMS_INVALID, '审核状态不允许为空');
+        }
+        $balance = new BalanceService();
+        $result = $balance->auditManual($post);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::MANUALCHECK, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_INSERT_FAIL, '手工记账审核失败');
+        }
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::MANUALCHECK, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
+    }
 }
