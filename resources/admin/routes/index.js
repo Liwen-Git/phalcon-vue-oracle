@@ -17,6 +17,8 @@ import AccountingEntryList from '../components/basic-info/accounting-entry/list'
 import BalanceList from '../components/financial-management/balance/list';
 import QueryManualList from '../components/financial-management/query-manual/list';
 
+import GeneralLedgerList from '../components/ledger/general-ledger/list';
+
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
 
@@ -58,6 +60,14 @@ const routes = [
         children: [
             {path: '/balance/index', component: BalanceList, name: '余额查询'},
             {path: '/balance/queryManual', component: QueryManualList, name: '手工记账管理'},
+        ]
+    },
+
+    {
+        path: '/',
+        component: Home,
+        children: [
+            {path: '/ledger/ledger', component: GeneralLedgerList, name: '总账'},
         ]
     },
 ];
