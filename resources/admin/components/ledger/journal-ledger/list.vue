@@ -51,7 +51,11 @@
             </el-form-item>
         </el-form>
         <el-table :data="list" stripe>
-            <el-table-column prop="tck_date" label="记账时间"></el-table-column>
+            <el-table-column prop="tck_date" label="记账时间">
+                <template slot-scope="scope">
+                    {{scope.row.tck_date.replace('T', "&nbsp")}}
+                </template>
+            </el-table-column>
             <el-table-column prop="subject_name" label="科目名称"></el-table-column>
             <el-table-column prop="subject_code" label="科目代码"></el-table-column>
             <el-table-column prop="agent_id" label="代理商编号"></el-table-column>
@@ -71,7 +75,11 @@
                     {{(scope.row.acc_amount / 100).toFixed(2)}}
                 </template>
             </el-table-column>
-            <el-table-column prop="trade_time" label="交易时间"></el-table-column>
+            <el-table-column prop="trade_time" label="交易时间">
+                <template slot-scope="scope">
+                    {{scope.row.trade_time.replace('T', "&nbsp")}}
+                </template>
+            </el-table-column>
             <el-table-column prop="merchant_name" label="客户名称"></el-table-column>
             <el-table-column prop="busi_type" label="业务大类">
                 <template slot-scope="scope">
@@ -95,7 +103,7 @@
 
 <script>
     export default {
-        name: "subsidiary-ledger-list",
+        name: "journal-ledger-list",
         data() {
             return {
                 form: {

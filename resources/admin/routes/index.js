@@ -20,6 +20,7 @@ import QueryManualList from '../components/financial-management/query-manual/lis
 import GeneralLedgerList from '../components/ledger/general-ledger/list';
 import SubsidiaryLedgerList from '../components/ledger/subsidiary-ledger/list';
 import JournalLedgerList from '../components/ledger/journal-ledger/list';
+import TrialBalanceList from '../components/ledger/trial-balance/list';
 
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
@@ -72,6 +73,7 @@ const routes = [
             {path: '/ledger/ledger', component: GeneralLedgerList, name: '总账'},
             {path: '/ledger/subsidiary', component: SubsidiaryLedgerList, name: '明细账'},
             {path: '/ledger/journal', component: JournalLedgerList, name: '序时账'},
+            {path: '/ledger/querysubbalance', component: TrialBalanceList, name: '试算平衡'},
         ]
     },
 ];

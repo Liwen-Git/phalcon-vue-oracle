@@ -51,5 +51,5 @@ return new \Phalcon\Config([
     /**
      * TfbApi Environment [开发=>dev;测试=>test;生产=>product]
      */
-    'isDebug' => 'dev',
+    'isDebug' => 'test',
 ]);

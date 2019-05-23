@@ -64,4 +64,24 @@ class LedgerService extends BaseService
 
         return $this->makeBack("数据获取成功[序时账]", true, $result['data']);
     }
+
+    /**
+     * 试算平衡
+     * @param array $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function getTrialBalanceList(array $param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = "querySubBalance";
+        $param['page_index'] = intval($page);
+        $param['page_num'] = intval($pageSize);
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[试算平衡]");
+        }
+
+        return $this->makeBack("获取成功[试算平衡]", true, $result['data']);
+    }
 }
