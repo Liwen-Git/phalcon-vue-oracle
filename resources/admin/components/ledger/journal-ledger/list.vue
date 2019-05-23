@@ -26,7 +26,7 @@
                 <el-date-picker
                         v-model="form.query_start_date"
                         type="date"
-                        placeholder="请选择日期"
+                        placeholder="请选择开始日期"
                         format="yyyy 年 MM 月 dd 日"
                         value-format="yyyy-MM-dd"
                 ></el-date-picker>

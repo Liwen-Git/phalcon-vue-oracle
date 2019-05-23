@@ -22,9 +22,12 @@ import SubsidiaryLedgerList from '../components/ledger/subsidiary-ledger/list';
 import JournalLedgerList from '../components/ledger/journal-ledger/list';
 import TrialBalanceList from '../components/ledger/trial-balance/list';
 
+import AgentProfitSharingList from '../components/report-management/agent-profit-sharing/list';
+
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
 
+    // 主页
     {
         path: '/',
         component: Home,
@@ -33,6 +36,7 @@ const routes = [
         ]
     },
 
+    // 系统管理
     {
         path: '/',
         component: Home,
@@ -44,6 +48,7 @@ const routes = [
         ]
     },
 
+    // 基础信息维护
     {
         path: '/',
         component: Home,
@@ -57,6 +62,7 @@ const routes = [
         ]
     },
 
+    // 财务管理
     {
         path: '/',
         component: Home,
@@ -66,6 +72,7 @@ const routes = [
         ]
     },
 
+    // 分类账
     {
         path: '/',
         component: Home,
@@ -76,5 +83,14 @@ const routes = [
             {path: '/ledger/querysubbalance', component: TrialBalanceList, name: '试算平衡'},
         ]
     },
+
+    // 报表管理
+    {
+        path: '/',
+        component: Home,
+        children: [
+            {path: '/report/qryagentpslist', component: AgentProfitSharingList, name: '代理商分润报表'},
+        ]
+    }
 ];
 export default routes;
