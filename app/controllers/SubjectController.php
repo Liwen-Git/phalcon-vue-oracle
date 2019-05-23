@@ -182,4 +182,34 @@ class SubjectController extends ControllerBase
 
         Result::success();
     }
+
+    /**
+     * 明细账-科目类型
+     */
+    public function getParentSubjectAction()
+    {
+        $get = $this->request->get();
+        $level = !empty($get['level']) ? $get['level'] : 0;
+        $topSubject = !empty($get['topSubject']) ? $get['topSubject'] : 0;
+        $level = $level - 1;
+
+        $subject = new SubjectService();
+        $result = $subject->getParentSubjects($level, $topSubject);
+
+        if ($result['status']){
+            $parent_subject = $result['data'];
+            $parent_subjects = [];
+            foreach ($parent_subject as $v){
+                $tmp = [];
+                $tmp['code'] = $v['subject_code'];
+                $tmp['isHasChild'] = $v['has_sub']; //是否有子级科目；1有 0无
+                $tmp['name'] = $v['subject_name'];
+                $parent_subjects[] = $tmp;
+            }
+
+            Result::success(['data'=>$parent_subjects]);
+        }else{
+            Result::success([]);
+        }
+    }
 }

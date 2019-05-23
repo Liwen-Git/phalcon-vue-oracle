@@ -24,4 +24,24 @@ class LedgerService extends BaseService
 
         return $this->makeBack("获取成功[总账]", true, $result['data']);
     }
+
+    /**
+     * 明细账
+     * @param array $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function getSubsidiaryLedgerList(array $param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = "queryDetailLedger";
+        $param['page_index'] = intval($page);
+        $param['page_num'] = intval($pageSize);
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[明细账]");
+        }
+
+        return $this->makeBack("获取成功[明细账]", true, $result['data']);
+    }
 }

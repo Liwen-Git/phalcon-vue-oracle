@@ -18,6 +18,7 @@ import BalanceList from '../components/financial-management/balance/list';
 import QueryManualList from '../components/financial-management/query-manual/list';
 
 import GeneralLedgerList from '../components/ledger/general-ledger/list';
+import SubsidiaryLedgerList from '../components/ledger/subsidiary-ledger/list';
 
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
@@ -68,6 +69,7 @@ const routes = [
         component: Home,
         children: [
             {path: '/ledger/ledger', component: GeneralLedgerList, name: '总账'},
+            {path: '/ledger/subsidiary', component: SubsidiaryLedgerList, name: '明细账'},
         ]
     },
 ];

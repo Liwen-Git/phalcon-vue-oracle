@@ -105,4 +105,30 @@ class SubjectService extends BaseService
 
         return $this->makeBack("获取成功[会计科目选择列表]", true, $res);
     }
+
+    /**
+     * 明细账-科目类型
+     * @param $level
+     * @param $topSubject
+     * @return array
+     */
+    public function getParentSubjects($level, $topSubject)
+    {
+        if ($topSubject == 0){
+            $where = " (tas.parent_subject is null) or (tas.parent_subject = {$topSubject}) ";
+        }else{
+            $where = "tas.parent_subject = {$topSubject}";
+        }
+        $sql = "select tas.subject_code,tas.subject_name,tas.has_sub,tas.subject_level from t_acc_subject tas where tas.subject_level = '{$level}' start with {$where} connect by tas.parent_subject = prior tas.subject_code ";
+        $result = $this->getDI()->get(self::DB_ACC)->query($sql)->fetchAll();
+
+        if (empty($result)){
+            return $this->makeBack("无数据[明细账-科目类型]");
+        }
+        foreach ($result as &$item) {
+            $item = array_change_key_case($item, CASE_LOWER);
+        }
+
+        return $this->makeBack("获取成功[明细账-科目类型]", true, $result);
+    }
 }
