@@ -86,4 +86,54 @@ class BusinessTypeService extends BaseService
 
         return $this->makeBack('添加或编辑业务类型成功', true, $result['data']);
     }
+
+    /**
+     * 通过id获取 获取业务大类
+     * @param $id
+     * @return array|bool|mixed
+     */
+    public function getBizTypes($id)
+    {
+        $key = "Cache:Biztype:T_".$id;
+        $bizType = json_decode($this->redis->get($key), true);
+        if (!$bizType) {
+            $sql = "select distinct(busi_type), busy_type_name from t_acc_busitype where busi_type = {$id}";
+            $result = $this->getDI()->get(self::DB_ACC)->query($sql)->fetch();
+            if (!$result) {
+                return false;
+            }
+            $result = array_change_key_case($result, CASE_LOWER);
+            $this->redis->set($key, json_encode([
+                $result['busi_type'] => $result['busy_type_name']
+            ], 320), 86400);
+            $bizType = [
+                $result['busi_type'] => $result['busy_type_name']
+            ];
+        }
+        return $bizType;
+    }
+
+    /**
+     * 获取所有业务大类
+     * @return array
+     */
+    public function getAllBizTypes()
+    {
+        $key = "Cache:Biztype:All";
+        $bizType = json_decode($this->redis->get($key), true);
+        if (!$bizType) {
+            $sql = "select distinct(busi_type), busy_type_name from t_acc_busitype";
+            $result = $this->getDI()->get(self::DB_ACC)->query($sql)->fetchAll();
+            if (!$result) {
+                return $this->makeBack("业务大类无数据");
+            }
+            $bizType = [];
+            foreach ($result as $item) {
+                $item = array_change_key_case($item, CASE_LOWER);
+                $bizType[$item['busi_type']] = $item['busy_type_name'];
+            }
+            $this->redis->set($key,json_encode($bizType,320),86400);
+        }
+        return $this->makeBack('获取成功[获取所有业务大类]', true, $bizType);
+    }
 }

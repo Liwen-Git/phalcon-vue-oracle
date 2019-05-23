@@ -149,4 +149,17 @@ class BusinessTypeController extends ControllerBase
 
         Result::success();
     }
+
+    /**
+     * 获取所有业务大类
+     */
+    public function getAllBizTypesAction()
+    {
+        $business = new BusinessTypeService();
+        $res = $business->getAllBizTypes();
+        if (!$res['status']) {
+            Result::success([]);
+        }
+        Result::success($res['data']);
+    }
 }
