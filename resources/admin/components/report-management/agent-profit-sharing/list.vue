@@ -114,14 +114,14 @@
                 <el-col :span="9" class="btn-class">
                     <el-form-item>
                         <el-button type="primary" @click="search">搜索</el-button>
-                        <el-button type="success" @click="">审核</el-button>
+                        <el-button type="success" @click="audit">审核</el-button>
                         <el-button type="success" @click="">财务回填</el-button>
                         <el-button type="success" @click="">导出记录</el-button>
                     </el-form-item>
                 </el-col>
             </el-row>
         </el-form>
-        <el-table :data="list" stripe>
+        <el-table :data="list" stripe @select-all="selectAll" @select="selectColumn">
             <el-table-column type="selection"></el-table-column>
             <el-table-column prop="ps_date" label="分润日期" width="100px"></el-table-column>
             <el-table-column prop="agentps_sum_id" label="分润汇总单号" show-overflow-tooltip></el-table-column>
@@ -227,12 +227,24 @@
         <el-dialog title="代理商分润审核" :visible.sync="checkDialog" :close-on-click-modal="false" width="70%">
             <check-agent-profit-sharing :theCheck="theCheck" @close="checkDialog = false" @checkSuccess="theSuccess"></check-agent-profit-sharing>
         </el-dialog>
+
+        <el-dialog title="代理商分润批量审核" :visible.sync="auditDialog" :close-on-click-modal="false" width="25%">
+            <audit-agent-profit-sharing
+                    :auditAmount="auditAmount"
+                    :auditNum="auditNum"
+                    :auditForm="auditForm"
+                    :auditIds="auditIds"
+                    :allSelection="allSelection"
+                    @close="auditDialog = false"
+                    @auditSuccess="theSuccess"></audit-agent-profit-sharing>
+        </el-dialog>
     </page>
 </template>
 
 <script>
     import EditAgentProfitSharing from './edit';
     import CheckAgentProfitSharing from './check';
+    import AuditAgentProfitSharing from './audit';
 
     export default {
         name: "agent-profit-sharing-list",
@@ -281,6 +293,15 @@
 
                 checkDialog: false,
                 theCheck: null,
+
+                allSelection: false,
+                theSelections: [],
+
+                auditDialog: false,
+                auditNum: 0,
+                auditAmount: 0,
+                auditForm: {},
+                auditIds: '',
             }
         },
         methods: {
@@ -302,6 +323,9 @@
                         this.sum_loss_amt = parseFloat(data.sum.sum_loss_amt).toFixed(2);
                         this.sum_real_agentps_amt = parseFloat(data.sum.sum_real_agentps_amt).toFixed(2);
                     }
+                    // 更新列表 checkbox还原
+                    this.allSelection = false;
+                    this.theSelections = [];
                 })
             },
             changePageSize(size) {
@@ -366,6 +390,42 @@
                 api.get('report_of_agent/downDetail', {agentps_sum_id: agentps_sum_id}).then(data => {
                     window.open(data.list.url);
                 })
+            },
+            selectAll(selection) {
+                if (selection.length <= 0) {
+                    this.allSelection = false;
+                } else {
+                    this.allSelection = true;
+                }
+                this.theSelections = selection;
+            },
+            selectColumn(selection) {
+                this.allSelection = false;
+                this.theSelections = selection;
+            },
+            audit() {
+                if (this.theSelections.length <= 0) {
+                    this.$message.error('请勾选审核数据');
+                    return false;
+                }
+
+                if (this.allSelection) {
+                    // 全选
+                    this.auditNum = this.total;
+                    this.auditAmount = this.sum_real_agentps_amt;
+                    this.auditForm = this.form;
+                    this.auditDialog = true;
+                } else {
+                    // 不是全选
+                    this.auditNum = this.theSelections.length;
+                    let ids = [];
+                    this.theSelections.forEach(item => {
+                        this.auditAmount += parseFloat(item.real_agentps_amt);
+                        ids.push(item.agentps_sum_id);
+                    });
+                    this.auditIds = ids.join();
+                    this.auditDialog = true;
+                }
             }
         },
         created() {
@@ -376,6 +436,7 @@
         components: {
             EditAgentProfitSharing,
             CheckAgentProfitSharing,
+            AuditAgentProfitSharing,
         }
     }
 </script>

@@ -156,4 +156,72 @@ class ReportOfAgentController extends ControllerBase
 
         Result::success(['list' => $list]);
     }
+
+    public function auditAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $auditData = [];
+
+        if ($post['is_all'] == '1') {
+            $auditData['changestate'] = $post['changestate'];
+            $auditData['check_oper_name'] = $this->user['name'];
+            $auditData['memo'] = $post['memo'];
+            if (!empty($post['ps_date_start'])) {
+                $auditData['ps_date_start'] = $post['ps_date_start'];
+            }
+            if (!empty($post['ps_date_end'])) {
+                $auditData['ps_date_end'] = $post['ps_date_end'];
+            }
+            if (!empty($post['agentps_sum_id'])) {
+                $auditData['agentps_sum_id'] = $post['agentps_sum_id'];
+            }
+            if (!empty($post['agent_id'])) {
+                $auditData['agent_id'] = $post['agent_id'];
+            }
+            if (!empty($post['agent_name'])) {
+                $auditData['agent_name'] = $post['agent_name'];
+            }
+            if (!empty($post['merchant_id'])) {
+                $auditData['merchant_id'] = $post['merchant_id'];
+            }
+            if (!empty($post['merchant_name'])) {
+                $auditData['merchant_name'] = $post['merchant_name'];
+            }
+            if (!empty($post['profit_share_cycle']) || $post['profit_share_cycle'] === '0'){
+                $auditData['profit_share_cycle'] = $post['profit_share_cycle'];
+            }
+            if (!empty($post['state'])) {
+                $auditData['state'] = implode(',', $post['state']);
+            }
+            if (!empty($post['busitypes_code'])) {
+                if(!empty($post['busitypes_code'][0])){
+                    $auditData['busi_type'] = $post['busitypes_code'][0];
+                }
+                if(!empty($post['busitypes_code'][1])){
+                    $auditData['second_busi_type'] = $post['busitypes_code'][1];
+                }
+                if(!empty($post['busitypes_code'][2])){
+                    $auditData['sub_busi_type'] = $post['busitypes_code'][2];
+                }
+            }
+        } else {
+            $auditData['agentps_sum_ids'] = $post['agentps_sum_ids'];
+            $auditData['changestate'] = $post['changestate'];
+            $auditData['check_oper_name'] = $this->user['name'];
+            $auditData['memo'] = $post['memo'];
+        }
+
+        $report = new ReportOfAgentService();
+        $result = $report->checkAgentProfitSharing($auditData);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSAUDIT, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_UPDATE_FAIL, '代理商分润审核失败');
+        }
+
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSAUDIT, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
+    }
 }
