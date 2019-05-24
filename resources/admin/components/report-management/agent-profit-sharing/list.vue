@@ -189,7 +189,7 @@
             <el-table-column label="操作" fixed="right" width="200px">
                 <template slot-scope="scope">
                     <el-button type="text" @click="edit(scope.row)">编辑</el-button>
-                    <el-button type="text" @click="">审核</el-button>
+                    <el-button type="text" @click="check(scope.row)">审核</el-button>
                     <el-button type="text" @click="">明细下载</el-button>
                 </template>
             </el-table-column>
@@ -220,14 +220,19 @@
             </el-col>
         </el-row>
 
-        <el-dialog title="代理商分润编辑" :visible.sync="editDialog" :close-on-click-modal="false">
+        <el-dialog title="代理商分润编辑" :visible.sync="editDialog" :close-on-click-modal="false" width="70%">
             <edit-agent-profit-sharing :theReport="theReport" @close="editDialog = false" @editSuccess="theSuccess"></edit-agent-profit-sharing>
+        </el-dialog>
+
+        <el-dialog title="代理商分润审核" :visible.sync="checkDialog" :close-on-click-modal="false" width="70%">
+            <check-agent-profit-sharing :theCheck="theCheck" @close="checkDialog = false" @checkSuccess="theSuccess"></check-agent-profit-sharing>
         </el-dialog>
     </page>
 </template>
 
 <script>
     import EditAgentProfitSharing from './edit';
+    import CheckAgentProfitSharing from './check';
 
     export default {
         name: "agent-profit-sharing-list",
@@ -273,6 +278,9 @@
 
                 editDialog: false,
                 theReport: null,
+
+                checkDialog: false,
+                theCheck: null,
             }
         },
         methods: {
@@ -349,6 +357,10 @@
             },
             theSuccess() {
                 this.getList();
+            },
+            check(row) {
+                this.theCheck = row;
+                this.checkDialog = true;
             }
         },
         created() {
@@ -358,6 +370,7 @@
         },
         components: {
             EditAgentProfitSharing,
+            CheckAgentProfitSharing,
         }
     }
 </script>

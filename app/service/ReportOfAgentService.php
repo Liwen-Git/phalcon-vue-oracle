@@ -42,4 +42,20 @@ class ReportOfAgentService extends BaseService
 
         return $this->makeBack("获取成功[编辑 代理商分润]", true, $result['data']);
     }
+
+    /**
+     * 代理商分润审核
+     * @param $param
+     * @return array
+     */
+    public function checkAgentProfitSharing($param)
+    {
+        $param['interface_type'] = "updateagentps";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[代理商分润审核]");
+        }
+
+        return $this->makeBack("获取成功[代理商分润审核]", true, $result['data']);
+    }
 }

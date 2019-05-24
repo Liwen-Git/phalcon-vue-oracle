@@ -26,9 +26,6 @@
                 <el-form-item label="分润金额(元)">
                     {{theReport.agentps_amt}}
                 </el-form-item>
-                <el-form-item label="分润金额(元)">
-                    {{theReport.agentps_amt}}
-                </el-form-item>
                 <el-form-item prop="other_amt" label="调整金额（元）">
                     <span v-if="theReport.state != '0'">{{theReport.other_amt}}</span>
                     <span v-else>

@@ -85,6 +85,9 @@ class ReportOfAgentController extends ControllerBase
         ]);
     }
 
+    /**
+     * 编辑
+     */
     public function editAction()
     {
         $post = $this->request->getJsonRawBody(true);
@@ -104,6 +107,27 @@ class ReportOfAgentController extends ControllerBase
             Result::error(ResultCode::DB_INSERT_FAIL, '代理商分润编辑失败');
         }
         $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSUPDATE, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
+    }
+
+    /**
+     * 代理商分润审核
+     */
+    public function checkAction()
+    {
+        $param = $this->request->getJsonRawBody(true);
+        $param['check_oper_name'] = $this->user['name'];
+
+        $report = new ReportOfAgentService();
+        $result = $report->checkAgentProfitSharing($param);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSCHECK, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_INSERT_FAIL, '代理商分润审核失败');
+        }
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSCHECK, OperateLog::STATUS_SUCCESS);
 
         Result::success();
     }
