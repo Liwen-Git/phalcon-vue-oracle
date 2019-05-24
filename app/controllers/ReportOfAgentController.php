@@ -157,6 +157,9 @@ class ReportOfAgentController extends ControllerBase
         Result::success(['list' => $list]);
     }
 
+    /**
+     * 批量审核
+     */
     public function auditAction()
     {
         $post = $this->request->getJsonRawBody(true);
@@ -221,6 +224,77 @@ class ReportOfAgentController extends ControllerBase
         }
 
         $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSAUDIT, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
+    }
+
+    /**
+     * 财务回填
+     */
+    public function financialAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $financialData = [];
+
+        if ($post['is_all'] == '1') {
+            $financialData['changestate'] = $post['changestate'];
+            $financialData['check_oper_name'] = $this->user['name'];
+            $financialData['memo'] = $post['memo'];
+            if (!empty($post['ps_date_start'])) {
+                $financialData['ps_date_start'] = $post['ps_date_start'];
+            }
+            if (!empty($post['ps_date_end'])) {
+                $financialData['ps_date_end'] = $post['ps_date_end'];
+            }
+            if (!empty($post['agentps_sum_id'])) {
+                $financialData['agentps_sum_id'] = $post['agentps_sum_id'];
+            }
+            if (!empty($post['agent_id'])) {
+                $financialData['agent_id'] = $post['agent_id'];
+            }
+            if (!empty($post['agent_name'])) {
+                $financialData['agent_name'] = $post['agent_name'];
+            }
+            if (!empty($post['merchant_id'])) {
+                $financialData['merchant_id'] = $post['merchant_id'];
+            }
+            if (!empty($post['merchant_name'])) {
+                $financialData['merchant_name'] = $post['merchant_name'];
+            }
+            if (!empty($post['profit_share_cycle']) || $post['profit_share_cycle'] === '0'){
+                $financialData['profit_share_cycle'] = $post['profit_share_cycle'];
+            }
+            if (!empty($post['state'])) {
+                $financialData['state'] = implode(',', $post['state']);
+            }
+            if (!empty($post['busitypes_code'])) {
+                if(!empty($post['busitypes_code'][0])){
+                    $financialData['busi_type'] = $post['busitypes_code'][0];
+                }
+                if(!empty($post['busitypes_code'][1])){
+                    $financialData['second_busi_type'] = $post['busitypes_code'][1];
+                }
+                if(!empty($post['busitypes_code'][2])){
+                    $financialData['sub_busi_type'] = $post['busitypes_code'][2];
+                }
+            }
+        } else {
+            $financialData['agentps_sum_ids'] = $post['agentps_sum_ids'];
+            $financialData['changestate'] = $post['changestate'];
+            $financialData['check_oper_name'] = $this->user['name'];
+            $financialData['memo'] = $post['memo'];
+        }
+
+        $report = new ReportOfAgentService();
+        $result = $report->checkAgentProfitSharing($financialData);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSCWHT, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_UPDATE_FAIL, '财务回填失败');
+        }
+
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSCWHT, OperateLog::STATUS_SUCCESS);
 
         Result::success();
     }

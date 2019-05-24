@@ -115,7 +115,7 @@
                     <el-form-item>
                         <el-button type="primary" @click="search">搜索</el-button>
                         <el-button type="success" @click="audit">审核</el-button>
-                        <el-button type="success" @click="">财务回填</el-button>
+                        <el-button type="success" @click="financial">财务回填</el-button>
                         <el-button type="success" @click="">导出记录</el-button>
                     </el-form-item>
                 </el-col>
@@ -238,6 +238,17 @@
                     @close="auditDialog = false"
                     @auditSuccess="theSuccess"></audit-agent-profit-sharing>
         </el-dialog>
+
+        <el-dialog title="代理商分润财务回填" :visible.sync="financialDialog" :close-on-click-modal="false" width="25%">
+            <financial-backfilling
+                    :financialAmount="financialAmount"
+                    :financialNum="financialNum"
+                    :financialForm="financialForm"
+                    :financialIds="financialIds"
+                    :allSelection="allSelection"
+                    @close="financialDialog = false"
+                    @financialSuccess="theSuccess"></financial-backfilling>
+        </el-dialog>
     </page>
 </template>
 
@@ -245,6 +256,7 @@
     import EditAgentProfitSharing from './edit';
     import CheckAgentProfitSharing from './check';
     import AuditAgentProfitSharing from './audit';
+    import FinancialBackfilling from './financial-backfilling';
 
     export default {
         name: "agent-profit-sharing-list",
@@ -302,6 +314,12 @@
                 auditAmount: 0,
                 auditForm: {},
                 auditIds: '',
+
+                financialDialog: false,
+                financialNum: 0,
+                financialAmount: 0,
+                financialForm: {},
+                financialIds: '',
             }
         },
         methods: {
@@ -426,6 +444,30 @@
                     this.auditIds = ids.join();
                     this.auditDialog = true;
                 }
+            },
+            financial() {
+                if (this.theSelections.length <= 0) {
+                    this.$message.error('请勾选财务回填数据');
+                    return false;
+                }
+
+                if (this.allSelection) {
+                    // 全选
+                    this.financialNum = this.total;
+                    this.financialAmount = this.sum_real_agentps_amt;
+                    this.financialForm = this.form;
+                    this.financialDialog = true;
+                } else {
+                    // 不是全选
+                    this.financialNum = this.theSelections.length;
+                    let ids = [];
+                    this.theSelections.forEach(item => {
+                        this.financialAmount += parseFloat(item.real_agentps_amt);
+                        ids.push(item.agentps_sum_id);
+                    });
+                    this.financialIds = ids.join();
+                    this.financialDialog = true;
+                }
             }
         },
         created() {
@@ -437,6 +479,7 @@
             EditAgentProfitSharing,
             CheckAgentProfitSharing,
             AuditAgentProfitSharing,
+            FinancialBackfilling,
         }
     }
 </script>
