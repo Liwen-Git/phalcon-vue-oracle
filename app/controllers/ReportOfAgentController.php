@@ -298,4 +298,67 @@ class ReportOfAgentController extends ControllerBase
 
         Result::success();
     }
+
+    /**
+     * 代理商分润报表导出
+     */
+    public function exportAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $exportData = [];
+
+        if (!empty($post['ps_date_start'])) {
+            $exportData['ps_date_start'] = $post['ps_date_start'];
+        }
+        if (!empty($post['ps_date_end'])) {
+            $exportData['ps_date_end'] = $post['ps_date_end'];
+        }
+        if (!empty($post['agentps_sum_id'])) {
+            $exportData['agentps_sum_id'] = $post['agentps_sum_id'];
+        }
+        if (!empty($post['agent_id'])) {
+            $exportData['agent_id'] = $post['agent_id'];
+        }
+        if (!empty($post['agent_name'])) {
+            $exportData['agent_name'] = $post['agent_name'];
+        }
+        if (!empty($post['merchant_id'])) {
+            $exportData['merchant_id'] = $post['merchant_id'];
+        }
+        if (!empty($post['merchant_name'])) {
+            $exportData['merchant_name'] = $post['merchant_name'];
+        }
+        if (!empty($post['profit_share_cycle']) || $post['profit_share_cycle'] === '0'){
+            $exportData['profit_share_cycle'] = $post['profit_share_cycle'];
+        }
+        if (!empty($post['state'])) {
+            $exportData['state'] = implode(',', $post['state']);
+        }
+        if (!empty($post['busitypes_code'])) {
+            if(!empty($post['busitypes_code'][0])){
+                $exportData['busi_type'] = $post['busitypes_code'][0];
+            }
+            if(!empty($post['busitypes_code'][1])){
+                $exportData['second_busi_type'] = $post['busitypes_code'][1];
+            }
+            if(!empty($post['busitypes_code'][2])){
+                $exportData['sub_busi_type'] = $post['busitypes_code'][2];
+            }
+        }
+
+        $exportData['oper_type'] = '1';
+        $report = new ReportOfAgentService();
+        $result = $report->exportAgentProfitSharingList($exportData);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSEXPORT, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_QUERY_FAIL, '导出失败');
+        }
+
+        $list = $result['data']['list'];
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSEXPORT, OperateLog::STATUS_SUCCESS);
+
+        Result::success(['list' => $list]);
+    }
 }

@@ -77,4 +77,23 @@ class ReportOfAgentService extends BaseService
 
         return $this->makeBack("获取成功[代理商分润报表明细下载]", true, $result['data']);
     }
+
+    /**
+     * 代理商分润报表导出
+     * @param array $param
+     * @return array
+     */
+    public function exportAgentProfitSharingList(array $param)
+    {
+        $param['interface_type'] = "qryagentpslist";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[代理商分润报表导出]");
+        }
+        if ($result['data']['total'] < 1 ){
+            return $this->makeBack("无数据");
+        }
+
+        return $this->makeBack("获取成功[代理商分润报表导出]", true, $result['data']);
+    }
 }

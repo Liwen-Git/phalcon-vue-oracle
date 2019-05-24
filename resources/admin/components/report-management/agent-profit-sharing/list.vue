@@ -116,7 +116,7 @@
                         <el-button type="primary" @click="search">搜索</el-button>
                         <el-button type="success" @click="audit">审核</el-button>
                         <el-button type="success" @click="financial">财务回填</el-button>
-                        <el-button type="success" @click="">导出记录</el-button>
+                        <el-button type="success" @click="exportExcel">导出记录</el-button>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -468,6 +468,11 @@
                     this.financialIds = ids.join();
                     this.financialDialog = true;
                 }
+            },
+            exportExcel() {
+                api.post('report_of_agent/export', this.form).then(data => {
+                    window.open(data.list.url);
+                })
             }
         },
         created() {

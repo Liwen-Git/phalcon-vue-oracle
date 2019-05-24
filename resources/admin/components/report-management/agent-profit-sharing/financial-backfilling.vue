@@ -57,7 +57,7 @@
             commit(state) {
                 let param = {};
                 if (this.allSelection) {
-                    // 全部审核
+                    // 全部回填
                     param = this.financialForm;
                     param.changestate = state;
                     param.memo = this.memo;
