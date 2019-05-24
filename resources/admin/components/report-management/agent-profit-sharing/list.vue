@@ -221,12 +221,14 @@
         </el-row>
 
         <el-dialog title="代理商分润编辑" :visible.sync="editDialog" :close-on-click-modal="false">
-
+            <edit-agent-profit-sharing :theReport="theReport" @close="editDialog = false" @editSuccess="theSuccess"></edit-agent-profit-sharing>
         </el-dialog>
     </page>
 </template>
 
 <script>
+    import EditAgentProfitSharing from './edit';
+
     export default {
         name: "agent-profit-sharing-list",
         data() {
@@ -344,12 +346,18 @@
             edit(row) {
                 this.theReport = row;
                 this.editDialog = true;
+            },
+            theSuccess() {
+                this.getList();
             }
         },
         created() {
             this.form.ps_date_start = moment().subtract(1, 'days').format("YYYY-MM-DD");
             this.form.ps_date_end = moment().subtract(1, 'days').format("YYYY-MM-DD");
             this.initPage();
+        },
+        components: {
+            EditAgentProfitSharing,
         }
     }
 </script>

@@ -2,8 +2,12 @@
 
 namespace App\Controllers;
 
+use App\Library\OperateLogAction;
 use App\Library\Result;
+use App\Library\ResultCode;
+use App\Models\OperateLog;
 use App\Service\BusinessTypeService;
+use App\Service\OperateLogService;
 use App\Service\ReportOfAgentService;
 
 class ReportOfAgentController extends ControllerBase
@@ -19,6 +23,9 @@ class ReportOfAgentController extends ControllerBase
         Result::success($result['data']);
     }
 
+    /**
+     * 代理商分润报表 列表
+     */
     public function agentProfitSharingListAction()
     {
         $get = $this->request->get();
@@ -76,5 +83,28 @@ class ReportOfAgentController extends ControllerBase
             'total' => $total,
             'sum' => $sum,
         ]);
+    }
+
+    public function editAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $param = [];
+        if (!empty($post['other_amt'])) {
+            $param['other_amt'] = round($post['other_amt'] * 100);
+        }
+        $param['agentps_sum_id'] = $post['agentps_sum_id'];
+        $param['memo'] = $post['memo'];
+
+        $report = new ReportOfAgentService();
+        $result = $report->editAgentProfitSharing($param);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSUPDATE, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_INSERT_FAIL, '代理商分润编辑失败');
+        }
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSUPDATE, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
     }
 }
