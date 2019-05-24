@@ -131,4 +131,29 @@ class ReportOfAgentController extends ControllerBase
 
         Result::success();
     }
+
+    /**
+     * 代理商分润报表明细下载
+     */
+    public function downDetailAction()
+    {
+        $get = $this->request->get();
+        $where = [];
+        $where['agentps_sum_id'] = $get['agentps_sum_id'];
+        $where['oper_type'] = '1';
+
+        $report = new ReportOfAgentService();
+        $result = $report->downAgentProfitSharingDetail($where);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSDETAILDOWN, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_QUERY_FAIL, '代理商分润报表明细下载失败');
+        }
+
+        $list = $result['data']['list'];
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::AGENTPSDETAILDOWN, OperateLog::STATUS_SUCCESS);
+
+        Result::success(['list' => $list]);
+    }
 }

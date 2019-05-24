@@ -190,7 +190,7 @@
                 <template slot-scope="scope">
                     <el-button type="text" @click="edit(scope.row)">编辑</el-button>
                     <el-button type="text" @click="check(scope.row)">审核</el-button>
-                    <el-button type="text" @click="">明细下载</el-button>
+                    <el-button type="text" @click="down(scope.row.agentps_sum_id)">明细下载</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -361,6 +361,11 @@
             check(row) {
                 this.theCheck = row;
                 this.checkDialog = true;
+            },
+            down(agentps_sum_id) {
+                api.get('report_of_agent/downDetail', {agentps_sum_id: agentps_sum_id}).then(data => {
+                    window.open(data.list.url);
+                })
             }
         },
         created() {
