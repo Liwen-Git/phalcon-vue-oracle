@@ -340,7 +340,7 @@ class ProfitController extends ControllerBase
 
         $where['oper_type'] = '1';
         $profit = new ProfitService();
-        $result = $profit->getProfitList($where);
+        $result = $profit->exportProfitList($where);
 
         $log = new OperateLogService();
         if (!$result['status']){
@@ -350,6 +350,104 @@ class ProfitController extends ControllerBase
 
         $list = $result['data']['list'];
         $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::PROFITLISTEXPORT, OperateLog::STATUS_SUCCESS);
+
+        Result::success(['list' => $list]);
+    }
+
+    /**
+     * 利润明细
+     */
+    public function profitDetailListAction()
+    {
+        $get = $this->request->get();
+        $page = $get['page'] ?: 1;
+        $pageSize = $get['pageSize'] ?: 10;
+
+        $where = [];
+        foreach ($get as $k => $v){
+            if ($k == 'page' || $k == 'pageSize'){
+                continue;
+            }
+            if($k == 'busitypes_code'){
+                //业务类型
+                if(!empty($v[0])){
+                    $where['busi_type'] = $v[0];
+                }
+                if(!empty($v[1])){
+                    $where['second_busi_type'] = $v[1];
+                }
+                if(!empty($v[2])){
+                    $where['sub_busi_type'] = $v[2];
+                }
+            }else{
+                if ($v && !empty($v)){
+                    $where[$k] = $v;
+                }
+            }
+        }
+
+        $profit = new ProfitService();
+        $result = $profit->getProfitDetailList($where, $page, $pageSize);
+
+        $list = [];
+        $total = 0;
+        $sum = [];
+        if ($result['status']) {
+            $list = $result['data']['list']['list'];
+            $total = $result['data']['list']['total'];
+            unset($result['data']['list']['list']);
+            unset($result['data']['list']['total']);
+            $sum = $result['data']['list'];
+        }
+        Result::success([
+            'list' => $list,
+            'total' => $total,
+            'sum' => $sum,
+        ]);
+    }
+
+    /**
+     * 利润明细导出
+     */
+    public function exportProfitDetailAction()
+    {
+        $get = $this->request->get();
+
+        $where = [];
+        foreach ($get as $k => $v){
+            if ($k == 'page' || $k == 'pageSize'){
+                continue;
+            }
+            if($k == 'busitypes_code'){
+                //业务类型
+                if(!empty($v[0])){
+                    $where['busi_type'] = $v[0];
+                }
+                if(!empty($v[1])){
+                    $where['second_busi_type'] = $v[1];
+                }
+                if(!empty($v[2])){
+                    $where['sub_busi_type'] = $v[2];
+                }
+            }else{
+                if ($v && !empty($v)){
+                    $where[$k] = $v;
+                }
+            }
+        }
+
+        $where['oper_type'] = '1';
+        $profit = new ProfitService();
+        $result = $profit->exportProfitDetail($where);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::PROFITDETAILEXPORT, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_QUERY_FAIL, '导出失败');
+        }
+
+        $list = $result['data']['list'];
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::PROFITDETAILEXPORT, OperateLog::STATUS_SUCCESS);
 
         Result::success(['list' => $list]);
     }

@@ -122,4 +122,57 @@ class ProfitService extends BaseService
 
         return $this->makeBack("获取成功[利润报表明细下载]", true, $result['data']);
     }
+
+    /**
+     * 利润报表导出
+     * @param array $param
+     * @return array
+     */
+    public function exportProfitList(array $param)
+    {
+        $param['interface_type'] = "qryprofitlist";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[利润报表导出]");
+        }
+        return $this->makeBack("数据获取成功[利润报表导出]", true, $result['data']);
+    }
+
+    /**
+     * 利润明细
+     * @param array $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function getProfitDetailList(array $param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = "qryprofitdetail";
+        $param['page_index'] = intval($page);
+        $param['page_num'] = intval($pageSize);
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[利润明细]");
+        }
+        return $this->makeBack("数据获取成功[利润明细]", true, $result['data']);
+    }
+
+    /**
+     * 利润明细导出
+     * @param array $param
+     * @return array
+     */
+    public function exportProfitDetail(array $param)
+    {
+        $param['interface_type'] = "qryprofitdetail";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[利润明细导出]");
+        }
+        if ($result['data']['total'] < 1 ){
+            return $this->makeBack("无数据[利润明细导出]");
+        }
+
+        return $this->makeBack("获取成功[利润明细导出]", true, $result['data']);
+    }
 }
