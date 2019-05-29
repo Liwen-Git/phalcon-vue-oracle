@@ -29,6 +29,7 @@ import ProfitList from '../components/report-management/profit-statement/list';
 import ProfitDetailList from '../components/report-management/profit-detail/list';
 import ModifiedReportList from '../components/report-management/modified-report/list';
 import DailyProfitList from '../components/report-management/daily-profit-statement/list';
+import ProfitSummaryList from '../components/report-management/profit-summary/list';
 
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
@@ -102,6 +103,7 @@ const routes = [
             {path: '/profit/profitdetail', component: ProfitDetailList, name: '利润明细'},
             {path: '/modifiedreport/getlist', component: ModifiedReportList, name: '数据报表修正'},
             {path: '/profit/dailyprofitlist', component: DailyProfitList, name: '日利润报表'},
+            {path: '/profit/profitsummarylist', component: ProfitSummaryList, name: '利润汇总报表'},
         ]
     }
 ];
