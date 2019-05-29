@@ -34,7 +34,7 @@
             </el-form>
         </el-col>
         <el-col>
-            <el-table :data="list" stripe>
+            <el-table :data="list" stripe border>
                 <el-table-column prop="row_num" label="序号" width="50px"></el-table-column>
                 <el-table-column prop="chl_name" label="渠道编号"></el-table-column>
                 <el-table-column prop="busi_type" label="业务类型"></el-table-column>

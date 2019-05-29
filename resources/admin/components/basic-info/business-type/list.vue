@@ -27,7 +27,7 @@
             </el-form>
         </el-col>
         <el-col>
-            <el-table :data="list" stripe>
+            <el-table :data="list" stripe border>
                 <el-table-column prop="busi_type" label="业务大类代码"></el-table-column>
                 <el-table-column prop="busy_type_name" label="业务大类名称"></el-table-column>
                 <el-table-column prop="second_busi_type" label="业务小类代码"></el-table-column>

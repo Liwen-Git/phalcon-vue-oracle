@@ -38,7 +38,7 @@
             </el-form>
         </el-col>
         <el-col>
-            <el-table :data="list" stripe>
+            <el-table :data="list" stripe border>
                 <el-table-column prop="USER_ID" label="用户ID"></el-table-column>
                 <el-table-column prop="OPR_NAME" label="用户名"></el-table-column>
                 <el-table-column prop="OPR_ACTION" label="操作内容"></el-table-column>

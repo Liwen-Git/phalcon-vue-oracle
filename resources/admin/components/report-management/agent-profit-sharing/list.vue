@@ -121,7 +121,7 @@
                 </el-col>
             </el-row>
         </el-form>
-        <el-table :data="list" stripe @select-all="selectAll" @select="selectColumn">
+        <el-table :data="list" stripe border @select-all="selectAll" @select="selectColumn">
             <el-table-column type="selection"></el-table-column>
             <el-table-column prop="ps_date" label="分润日期" width="100px"></el-table-column>
             <el-table-column prop="agentps_sum_id" label="分润汇总单号" show-overflow-tooltip></el-table-column>

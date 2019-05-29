@@ -50,7 +50,7 @@
                 <el-button type="primary" @click="search">查询</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="list" stripe>
+        <el-table :data="list" stripe border>
             <el-table-column prop="tck_date" label="记账时间">
                 <template slot-scope="scope">
                     {{scope.row.tck_date.replace('T', "&nbsp")}}

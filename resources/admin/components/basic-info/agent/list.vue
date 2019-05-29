@@ -20,7 +20,7 @@
                 <el-button type="primary" @click="search">查询</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="list" stripe>
+        <el-table :data="list" stripe border>
             <el-table-column prop="index" label="序号"></el-table-column>
             <el-table-column prop="agent_id" label="代理商号"></el-table-column>
             <el-table-column prop="agent_name" label="代理商名称"></el-table-column>

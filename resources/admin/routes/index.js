@@ -23,8 +23,9 @@ import JournalLedgerList from '../components/ledger/journal-ledger/list';
 import TrialBalanceList from '../components/ledger/trial-balance/list';
 
 import AgentProfitSharingList from '../components/report-management/agent-profit-sharing/list';
-import ProfitDetailList from '../components/report-management/profit-detail/list';
+import AgentProfitDetailList from '../components/report-management/agent-profit-detail/list';
 import ProfitFailDetailList from '../components/report-management/profit-fail-detail/list';
+import ProfitList from '../components/report-management/profit-statement/list';
 
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
@@ -92,8 +93,9 @@ const routes = [
         component: Home,
         children: [
             {path: '/report/qryagentpslist', component: AgentProfitSharingList, name: '代理商分润报表'},
-            {path: '/profit/agentpsdetail', component: ProfitDetailList, name: '分润明细'},
+            {path: '/profit/agentpsdetail', component: AgentProfitDetailList, name: '分润明细'},
             {path: '/profit/agentpsfaildetail', component: ProfitFailDetailList, name: '未分润明细'},
+            {path: '/profit/profitlist', component: ProfitList, name: '利润报表'},
         ]
     }
 ];

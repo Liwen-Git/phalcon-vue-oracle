@@ -25,7 +25,7 @@
             </el-form>
         </el-col>
         <el-col>
-            <el-table :data="list" stripe>
+            <el-table :data="list" stripe border>
                 <el-table-column prop="subject_code" label="科目代码"></el-table-column>
                 <el-table-column prop="subject_name" label="科目名称"></el-table-column>
                 <el-table-column prop="subject_level" label="科目级别">

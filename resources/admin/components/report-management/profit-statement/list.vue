@@ -1,27 +1,7 @@
 <template>
-    <page title="代理商分润报表">
+    <page title="利润报表">
         <el-form :model="form" ref="form" size="small" inline label-width="150px">
             <el-row>
-                <el-col :span="12">
-                    <el-form-item label="分润日期">
-                        <el-date-picker
-                                v-model="form.ps_date_start"
-                                type="date"
-                                placeholder="请选择开始日期"
-                                format="yyyy 年 MM 月 dd 日"
-                                value-format="yyyy-MM-dd"
-                        ></el-date-picker>
-                        <span> - </span>
-                        <el-date-picker
-                                v-model="form.ps_date_end"
-                                type="date"
-                                placeholder="请选择结束日期"
-                                format="yyyy 年 MM 月 dd 日"
-                                value-format="yyyy-MM-dd"
-                                :picker-options="{disabledDate: (time) => {return time.getTime() < new Date(form.ps_date_start)}}"
-                        ></el-date-picker>
-                    </el-form-item>
-                </el-col>
                 <el-col :span="12">
                     <el-form-item label="交易日期">
                         <el-date-picker
@@ -40,6 +20,11 @@
                                 value-format="yyyy-MM-dd"
                                 :picker-options="{disabledDate: (time) => {return time.getTime() < new Date(form.tran_date_start)}}"
                         ></el-date-picker>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item prop="profit_sum_id" label="利润汇总单号">
+                        <el-input type="text" v-model="form.profit_sum_id" placeholder="请输入利润汇总单号" clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -87,20 +72,11 @@
             </el-row>
             <el-row>
                 <el-col :span="12">
-                    <el-form-item prop="agentps_sum_id" label="分润汇总单号">
-                        <el-input type="text" v-model="form.agentps_sum_id" placeholder="请输入汇总单号" clearable></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item prop="agentps_detail_id" label="分润单号">
-                        <el-input type="text" v-model="form.agentps_detail_id" placeholder="请输入分润单号" clearable></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row>
-                <el-col :span="12">
-                    <el-form-item prop="order_id" label="交易单号">
-                        <el-input type="text" v-model="form.order_id" placeholder="请输入交易单号" clearable></el-input>
+                    <el-form-item prop="direct_sign" label="是否直签">
+                        <el-select v-model="form.direct_sign" placeholder="全部" clearable>
+                            <el-option label="是" value="0"></el-option>
+                            <el-option label="否" value="1"></el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -128,40 +104,63 @@
                 </el-col>
             </el-row>
         </el-form>
-        <el-table :data="list" stripe>
-            <el-table-column prop="ps_date" label="分润日期" width="100px"></el-table-column>
-            <el-table-column prop="agentps_sum_id" label="分润汇总单号" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="agentps_detail_id" label="分润单号" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="order_id" label="交易单号"></el-table-column>
-            <el-table-column prop="agent_id" label="代理商号"></el-table-column>
-            <el-table-column prop="agent_name" label="代理商名称" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="agent_level" label="代理商级别"></el-table-column>
-            <el-table-column prop="agent_fee_rate" label="代理商费率"></el-table-column>
-            <el-table-column prop="lower_agent_fee_rate" label="下级费率"></el-table-column>
-            <el-table-column prop="merchant_id" label="商户号"></el-table-column>
+        <el-table :data="list" stripe border>
+            <el-table-column prop="tran_date" label="交易日期" width="100px"></el-table-column>
+            <el-table-column prop="profit_sum_id" label="利润汇总单号" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="merchant_id" label="商户号" show-overflow-tooltip></el-table-column>
             <el-table-column prop="merchant_name" label="商户名称" show-overflow-tooltip></el-table-column>
             <el-table-column prop="busi_type" label="业务类型" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="sub_busi_type" label="业务方向"></el-table-column>
-            <el-table-column prop="bank_card_type" label="借贷标识"></el-table-column>
-            <el-table-column prop="trade_time" label="交易时间"></el-table-column>
-            <el-table-column prop="tran_amt" label="交易金额(元)" width="100px">
+            <el-table-column prop="sub_busi_type" label="业务方向" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="one_agent_id" label="一级代理商号" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="one_agent_name" label="一级代理商名称" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="one_agentps_amt" label="一级代理分润" show-overflow-tooltip>
                 <template slot-scope="scope">
                     {{parseFloat(scope.row.tran_amt).toFixed(2)}}
                 </template>
             </el-table-column>
-            <el-table-column prop="agentps_amt" label="分润金额(元)">
+            <el-table-column prop="one_agent_other_amt" label="一级代理商调整金额"></el-table-column>
+            <el-table-column prop="two_agent_id" label="二级代理商号" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="two_agent_name" label="二级代理商名称" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="two_agentps_amt" label="二级代理分润" show-overflow-tooltip>
                 <template slot-scope="scope">
-                    {{parseFloat(scope.row.agentps_amt).toFixed(2)}}
+                    {{parseFloat(scope.row.two_agentps_amt).toFixed(2)}}
                 </template>
             </el-table-column>
-            <el-table-column prop="loss_amt" label="亏损金额(元)">
+            <el-table-column prop="two_agent_other_amt" label="二级代理商调整金额"></el-table-column>
+            <el-table-column prop="loss_amt" label="亏损金额">
                 <template slot-scope="scope">
                     {{parseFloat(scope.row.loss_amt).toFixed(2)}}
                 </template>
             </el-table-column>
-            <el-table-column prop="real_agentps_amt" label="实际分润金额(元)">
+            <el-table-column prop="tran_amt" label="交易总金额" show-overflow-tooltip>
                 <template slot-scope="scope">
-                    {{parseFloat(scope.row.real_agentps_amt).toFixed(2)}}
+                    {{parseFloat(scope.row.tran_amt).toFixed(2)}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="tran_cnt" label="交易总笔数"></el-table-column>
+            <el-table-column prop="channel_fee" label="渠道总成本">
+                <template slot-scope="scope">
+                    {{parseFloat(scope.row.channel_fee).toFixed(2)}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="merchant_fee" label="手续费总收入">
+                <template slot-scope="scope">
+                    {{parseFloat(scope.row.merchant_fee).toFixed(2)}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="all_agentps_amt" label="代理商总分润">
+                <template slot-scope="scope">
+                    {{parseFloat(scope.row.all_agentps_amt).toFixed(2)}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="tfb_profit_amt" label="天下收益">
+                <template slot-scope="scope">
+                    {{parseFloat(scope.row.tfb_profit_amt).toFixed(2)}}
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" fixed="right">
+                <template slot-scope="scope">
+                    <el-button type="text" @click="down(scope.row.profit_sum_id)">明细下载</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -175,12 +174,26 @@
                 @size-change="changePageSize"
         ></el-pagination>
         <el-row style="margin-top: 20px">
+            <el-col>
+                交易金额小计：{{subsum_tran_amt}}元，
+                交易总笔数小计：{{subsum_tran_cnt}}笔，
+                渠道成本小计：{{subsum_channel_fee}}元，
+                收入小计：{{subsum_merchant_fee}}元，
+                收益小计：{{subsum_tfb_profit_amt}}元，
+                代理商分润小计：{{subsum_all_agentps_amt}}元，
+                一级代理分润小计：{{subsum_one_agentps_amt}}元，
+                二级代理分润小计：{{subsum_two_agentps_amt}}元
+                <span style="color: red;">（当前页面数据汇总）</span>
+            </el-col>
             <el-col style="margin-top: 10px">
-                交易总金额：{{sum_tran_amt}}元，
-                分润总金额：{{sum_agentps_amt}}元，
-                分润总笔数：{{sum_agentps_cnt}}笔，
-                亏损总金额：{{sum_loss_amt}}元，
-                实际分润总金额：{{sum_real_agentps_amt}}元
+                交易金额总计：{{sum_tran_amt}}元，
+                交易总笔数：{{sum_tran_cnt}}笔，
+                渠道成本总计：{{sum_channel_fee}}元，
+                收入总计：{{sum_merchant_fee}}元，
+                收益总计：{{sum_tfb_profit_amt}}元，
+                代理商分润总计：{{sum_all_agentps_amt}}元，
+                一级代理分润总计：{{sum_one_agentps_amt}}元，
+                二级代理分润总计：{{sum_two_agentps_amt}}元
                 <span style="color: red;">（所有页面数据汇总）</span>
             </el-col>
         </el-row>
@@ -189,18 +202,13 @@
 
 <script>
     export default {
-        name: "profit-detail-list",
+        name: "profit-fail-detail-list",
         data() {
             return {
                 form: {
-                    ps_date_start: '',
-                    ps_date_end: '',
-
                     tran_date_start: '',
                     tran_date_end: '',
-
-                    agentps_sum_id: '',
-                    agentps_detail_id: '',
+                    profit_sum_id: '',
 
                     agent_id: '',
                     agent_name: '',
@@ -208,7 +216,7 @@
                     merchant_id: '',
                     merchant_name: '',
 
-                    order_id: '',
+                    direct_sign: '',
                     busitypes_code: [],
 
                     page: 1,
@@ -224,11 +232,22 @@
 
                 businessTypes: [],
 
+                subsum_tran_amt: '0.00',
+                subsum_tran_cnt: '0',
+                subsum_channel_fee: '0.00',
+                subsum_merchant_fee: '0.00',
+                subsum_tfb_profit_amt: '0.00',
+                subsum_all_agentps_amt: '0.00',
+                subsum_one_agentps_amt: '0.00',
+                subsum_two_agentps_amt: '0.00',
                 sum_tran_amt: '0.00',
-                sum_agentps_amt: '0.00',
-                sum_agentps_cnt: '0',
-                sum_loss_amt: '0.00',
-                sum_real_agentps_amt: '0.00',
+                sum_tran_cnt: '0',
+                sum_channel_fee: '0.00',
+                sum_merchant_fee: '0.00',
+                sum_tfb_profit_amt: '0.00',
+                sum_all_agentps_amt: '0.00',
+                sum_one_agentps_amt: '0.00',
+                sum_two_agentps_amt: '0.00',
             }
         },
         methods: {
@@ -237,15 +256,26 @@
                 this.getList();
             },
             getList() {
-                api.get('profit/profitDetailList', this.form).then(data => {
+                api.get('profit/profitList', this.form).then(data => {
                     this.list = data.list;
                     this.total = data.total;
                     if (Object.keys(data.sum).length > 0) {
+                        this.subsum_tran_amt = parseFloat(data.sum.subsum_tran_amt).toFixed(2);
+                        this.subsum_tran_cnt = parseInt(data.sum.subsum_tran_cnt);
+                        this.subsum_channel_fee = parseFloat(data.sum.subsum_channel_fee).toFixed(2);
+                        this.subsum_merchant_fee = parseFloat(data.sum.subsum_merchant_fee).toFixed(2);
+                        this.subsum_tfb_profit_amt = parseFloat(data.sum.subsum_tfb_profit_amt).toFixed(2);
+                        this.subsum_all_agentps_amt = parseFloat(data.sum.subsum_all_agentps_amt).toFixed(2);
+                        this.subsum_one_agentps_amt = parseFloat(data.sum.subsum_one_agentps_amt).toFixed(2);
+                        this.subsum_two_agentps_amt = parseFloat(data.sum.subsum_two_agentps_amt).toFixed(2);
                         this.sum_tran_amt = parseFloat(data.sum.sum_tran_amt).toFixed(2);
-                        this.sum_agentps_amt = parseFloat(data.sum.sum_agentps_amt).toFixed(2);
-                        this.sum_agentps_cnt = parseInt(data.sum.sum_agentps_cnt);
-                        this.sum_loss_amt = parseFloat(data.sum.sum_loss_amt).toFixed(2);
-                        this.sum_real_agentps_amt = parseFloat(data.sum.sum_real_agentps_amt).toFixed(2);
+                        this.sum_tran_cnt = parseInt(data.sum.sum_tran_cnt);
+                        this.sum_channel_fee = parseFloat(data.sum.sum_channel_fee).toFixed(2);
+                        this.sum_merchant_fee = parseFloat(data.sum.sum_merchant_fee).toFixed(2);
+                        this.sum_tfb_profit_amt = parseFloat(data.sum.sum_tfb_profit_amt).toFixed(2);
+                        this.sum_all_agentps_amt = parseFloat(data.sum.sum_all_agentps_amt).toFixed(2);
+                        this.sum_one_agentps_amt = parseFloat(data.sum.sum_one_agentps_amt).toFixed(2);
+                        this.sum_two_agentps_amt = parseFloat(data.sum.sum_two_agentps_amt).toFixed(2);
                     }
                 })
             },
@@ -287,15 +317,18 @@
                     this.merchantOptions = [];
                 }
             },
+            down(profit_sum_id) {
+                api.get('profit/downProfitDetail', {profit_sum_id: profit_sum_id}).then(data => {
+                    window.open(data.list.url);
+                })
+            },
             exportExcel() {
-                api.post('profit/exportProfitDetail', this.form).then(data => {
+                api.post('profit/exportProfitList', this.form).then(data => {
                     window.open(data.list.url);
                 })
             }
         },
         created() {
-            this.form.ps_date_start = moment().subtract(1, 'days').format("YYYY-MM-DD");
-            this.form.ps_date_end = moment().subtract(1, 'days').format("YYYY-MM-DD");
             this.form.tran_date_start = moment().subtract(1, 'days').format("YYYY-MM-DD");
             this.form.tran_date_end = moment().subtract(1, 'days').format("YYYY-MM-DD");
             this.initPage();

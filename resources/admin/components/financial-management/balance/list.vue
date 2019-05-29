@@ -43,7 +43,7 @@
                 <el-button type="primary" @click="search">查询</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="list" stripe>
+        <el-table :data="list" stripe border>
             <el-table-column prop="merchant_id" label="商户号"></el-table-column>
             <el-table-column prop="merchant_name" label="商户名称"></el-table-column>
             <el-table-column prop="merchant_type" label="商户类型">

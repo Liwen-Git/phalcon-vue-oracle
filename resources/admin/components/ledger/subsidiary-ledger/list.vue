@@ -36,7 +36,7 @@
                 <el-button type="primary" @click="search">查询</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="list" stripe>
+        <el-table :data="list" stripe border>
             <el-table-column prop="tck_date" label="日期">
                 <template slot-scope="scope">
                     {{new Date(scope.row.tck_date).getFullYear() + '-' + (new Date(scope.row.tck_date).getMonth() + 1) + '-' + new Date(scope.row.tck_date).getDate()}}

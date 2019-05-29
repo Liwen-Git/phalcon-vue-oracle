@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-table :data="list" stripe>
+        <el-table :data="list" stripe border>
             <el-table-column prop="acc_inc" label="流水号"></el-table-column>
             <el-table-column prop="acc_id" label="记账主体"></el-table-column>
             <el-table-column prop="acc_name" label="记账主体名称"></el-table-column>

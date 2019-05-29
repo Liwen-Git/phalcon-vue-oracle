@@ -14,7 +14,7 @@
                 <el-button type="primary" @click="search">查询</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="list" stripe>
+        <el-table :data="list" stripe border>
             <el-table-column prop="ctime" label="日期">
                 <template slot-scope="scope">
                     {{theDate}}

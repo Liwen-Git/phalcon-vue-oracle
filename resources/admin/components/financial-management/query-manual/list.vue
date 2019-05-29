@@ -45,7 +45,7 @@
             </el-form-item>
             <el-button class="fr" size="small" type="success" @click="addDialog = true">添加</el-button>
         </el-form>
-        <el-table :data="list" stripe>
+        <el-table :data="list" stripe border>
             <el-table-column prop="acc_inc" label="流水号"></el-table-column>
             <el-table-column prop="acc_amount" label="记账金额">
                 <template slot-scope="scope">
