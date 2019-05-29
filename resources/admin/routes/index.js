@@ -27,6 +27,7 @@ import AgentProfitDetailList from '../components/report-management/agent-profit-
 import ProfitFailDetailList from '../components/report-management/profit-fail-detail/list';
 import ProfitList from '../components/report-management/profit-statement/list';
 import ProfitDetailList from '../components/report-management/profit-detail/list';
+import ModifiedReportList from '../components/report-management/modified-report/list';
 
 const routes = [
     {path: '/login', component: Login, name: 'Login'},
@@ -98,6 +99,7 @@ const routes = [
             {path: '/profit/agentpsfaildetail', component: ProfitFailDetailList, name: '未分润明细'},
             {path: '/profit/profitlist', component: ProfitList, name: '利润报表'},
             {path: '/profit/profitdetail', component: ProfitDetailList, name: '利润明细'},
+            {path: '/modifiedreport/getlist', component: ModifiedReportList, name: '数据报表修正'},
         ]
     }
 ];

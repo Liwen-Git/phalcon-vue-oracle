@@ -175,4 +175,43 @@ class ProfitService extends BaseService
 
         return $this->makeBack("获取成功[利润明细导出]", true, $result['data']);
     }
+
+    /**
+     * 获取重跑列表
+     * @param array $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function getModifyReportList(array $param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = "qryredolist";
+        $param['page_index'] = intval($page);
+        $param['page_num'] = intval($pageSize);
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[获取重跑列表]");
+        }
+        if ($result['data']['total'] < 1 ){
+            return $this->makeBack("无数据[获取重跑列表]");
+        }
+
+        return $this->makeBack("获取成功[获取重跑列表]", true, $result['data']);
+    }
+
+    /**
+     * 重跑分润
+     * @param array $param
+     * @return array
+     */
+    public function modifyReport(array $param)
+    {
+        $param['interface_type'] = "redo";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[重跑分润]");
+        }
+
+        return $this->makeBack("获取成功[重跑分润]", true, $result['data']);
+    }
 }

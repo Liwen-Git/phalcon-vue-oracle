@@ -202,7 +202,7 @@
 
 <script>
     export default {
-        name: "profit-fail-detail-list",
+        name: "profit-statement-list",
         data() {
             return {
                 form: {

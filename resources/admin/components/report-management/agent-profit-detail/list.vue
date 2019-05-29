@@ -189,7 +189,7 @@
 
 <script>
     export default {
-        name: "profit-detail-list",
+        name: "agent-profit-detail-list",
         data() {
             return {
                 form: {

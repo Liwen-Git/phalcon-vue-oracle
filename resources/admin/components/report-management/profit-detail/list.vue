@@ -180,7 +180,7 @@
 
 <script>
     export default {
-        name: "profit-fail-detail-list",
+        name: "profit-detail-list",
         data() {
             return {
                 form: {

@@ -451,4 +451,83 @@ class ProfitController extends ControllerBase
 
         Result::success(['list' => $list]);
     }
+
+    /**
+     * 获取重跑列表
+     */
+    public function modifyReportListAction()
+    {
+        $get = $this->request->get();
+        $page = $get['page'] ?: 1;
+        $pageSize = $get['pageSize'] ?: 10;
+
+        $where = [];
+        foreach ($get as $k => $v){
+            if ($k == 'page' || $k == 'pageSize'){
+                continue;
+            }
+
+            if ($v && !empty($v)){
+                $where[$k] = $v;
+            }
+        }
+
+        $profit = new ProfitService();
+        $result = $profit->getModifyReportList($where, $page, $pageSize);
+
+        $list = [];
+        $total = 0;
+        if ($result['status']) {
+            $list = $result['data']['list']['list'];
+            $total = $result['data']['list']['total'];
+        }
+
+        Result::success([
+            'list' => $list,
+            'total' => $total,
+        ]);
+    }
+
+    /**
+     * 重跑分润
+     */
+    public function modifyReportAction()
+    {
+        $post = $this->request->getJsonRawBody(true);
+        $param = [];
+        $param['trade_begin_time'] = $post['trade_begin_time'];
+        $param['trade_end_time'] = $post['trade_end_time'];
+        if(!empty($post['busitypes_code'])){
+            //业务类型
+            if(!empty($post['busitypes_code'][0])){
+                $param['busi_type'] = $post['busitypes_code'][0];
+            }
+            if(!empty($post['busitypes_code'][1])){
+                $param['second_busi_type'] = $post['busitypes_code'][1];
+            }
+            if(!empty($post['busitypes_code'][2])){
+                $param['sub_busi_type'] = $post['busitypes_code'][2];
+            }
+        }
+        if(!empty($post['merchant_id'])) $param['merchant_id'] = $post['merchant_id'];
+        if(!empty($post['agent_id'])) $param['agent_id'] = $post['agent_id'];
+        if(!empty($post['chl_name'])) $param['chl_name'] = $post['chl_name'];
+        if(!empty($post['oder_id'])) $param['oder_id'] = $post['oder_id'];
+        if(($post['order_type'] !== '')) $param['order_type'] = $post['order_type'];
+        if($post['type'] !== '') $param['type'] = $post['type'];
+        if(!empty($post['sum_id'])) $param['sum_id'] = $post['sum_id'];
+
+        $profit = new ProfitService();
+        $result = $profit->modifyReport($param);
+
+        $log = new OperateLogService();
+        if (!$result['status']){
+            $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::MODIFIEDREPORT, OperateLog::STATUS_FAILED);
+            Result::error(ResultCode::DB_UPDATE_FAIL, '重跑分润失败');
+        }
+
+        $log->addOperateLog($this->user['user_id'], $this->user['account'], OperateLogAction::MODIFIEDREPORT, OperateLog::STATUS_SUCCESS);
+
+        Result::success();
+    }
 }
