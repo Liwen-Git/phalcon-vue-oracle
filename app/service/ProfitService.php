@@ -214,4 +214,38 @@ class ProfitService extends BaseService
 
         return $this->makeBack("获取成功[重跑分润]", true, $result['data']);
     }
+
+    /**
+     * 日利润报表
+     * @param array $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function getDailyProfitList(array $param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = "qrydayprofitlist";
+        $param['page_index'] = intval($page);
+        $param['page_num'] = intval($pageSize);
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[日利润报表]");
+        }
+        return $this->makeBack("数据获取成功[日利润报表]", true, $result['data']);
+    }
+
+    /**
+     * 日利润报表导出
+     * @param array $param
+     * @return array
+     */
+    public function exportDailyProfit(array $param)
+    {
+        $param['interface_type'] = "qrydayprofitlist";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[日利润报表导出]");
+        }
+        return $this->makeBack("数据获取成功[日利润报表导出]", true, $result['data']);
+    }
 }
