@@ -74,4 +74,38 @@ class ChannelService extends BaseService
 
         return $this->makeBack("获取成功[搜索渠道信息]", true, $result['data']);
     }
+
+    /**
+     * 渠道交易报表
+     * @param array $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function getChannelTradeList(array $param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = "qrydaychannellist";
+        $param['page_index'] = intval($page);
+        $param['page_num'] = intval($pageSize);
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[渠道交易报表]");
+        }
+        return $this->makeBack("数据获取成功[渠道交易报表]", true, $result['data']);
+    }
+
+    /**
+     * 渠道交易报表导出
+     * @param array $param
+     * @return array
+     */
+    public function exportChannelTrade(array $param)
+    {
+        $param['interface_type'] = "qrydaychannellist";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[渠道交易报表导出]");
+        }
+        return $this->makeBack("数据获取成功[渠道交易报表导出]", true, $result['data']);
+    }
 }
