@@ -96,4 +96,46 @@ class ReportOfAgentService extends BaseService
 
         return $this->makeBack("获取成功[代理商分润报表导出]", true, $result['data']);
     }
+
+    /**
+     * 获取 代理商结算报表
+     * @param array $param
+     * @param int $page
+     * @param int $pageSize
+     * @return array
+     */
+    public function getAgentSettlementReport(array $param, $page = 1, $pageSize = 10)
+    {
+        $param['interface_type'] = "qrydayagentpslist";
+        $param['page_index'] = intval($page);
+        $param['page_num'] = intval($pageSize);
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[代理商结算报表]");
+        }
+        if ($result['data']['total'] < 1 ){
+            return $this->makeBack("无数据[代理商结算报表]");
+        }
+
+        return $this->makeBack("获取成功[代理商结算报表]", true, $result['data']);
+    }
+
+    /**
+     * 代理商结算报表 导出
+     * @param array $param
+     * @return array
+     */
+    public function exportAgentSettlementReport(array $param)
+    {
+        $param['interface_type'] = "qrydayagentpslist";
+        $result = $this->postHttp("ledger", $param);
+        if (!$result['status']){
+            return $this->makeBack("数据获取失败[代理商结算报表 导出]");
+        }
+        if ($result['data']['total'] < 1 ){
+            return $this->makeBack("无数据[代理商结算报表 导出]");
+        }
+
+        return $this->makeBack("获取成功[代理商结算报表 导出]", true, $result['data']);
+    }
 }

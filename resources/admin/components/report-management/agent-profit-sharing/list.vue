@@ -476,15 +476,32 @@
             }
         },
         created() {
-            this.form.ps_date_start = moment().subtract(1, 'days').format("YYYY-MM-DD");
-            this.form.ps_date_end = moment().subtract(1, 'days').format("YYYY-MM-DD");
-            this.initPage();
+            if (Object.keys(this.$route.query).length === 0) {
+                this.form.ps_date_start = moment().subtract(1, 'days').format("YYYY-MM-DD");
+                this.form.ps_date_end = moment().subtract(1, 'days').format("YYYY-MM-DD");
+                this.initPage();
+            }
         },
         components: {
             EditAgentProfitSharing,
             CheckAgentProfitSharing,
             AuditAgentProfitSharing,
             FinancialBackfilling,
+        },
+        watch: {
+            '$route.query': {
+                handler(newValue, oldValue) {
+                    if (Object.keys(newValue).length > 0) {
+                        this.form.ps_date_start = newValue.tran_date_start;
+                        this.form.ps_date_end = newValue.tran_date_end;
+                        this.form.agent_id = newValue.agent_id;
+                        this.initPage();
+                    }
+
+                },
+                deep: true,
+                immediate: true,
+            }
         }
     }
 </script>
