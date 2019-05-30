@@ -323,7 +323,7 @@
                 })
             },
             exportExcel() {
-                api.post('profit/exportProfitList', this.form).then(data => {
+                api.get('profit/exportProfitList', this.form).then(data => {
                     window.open(data.list.url);
                 })
             }

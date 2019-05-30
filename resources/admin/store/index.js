@@ -80,11 +80,12 @@ export default new Vuex.Store({
             context.commit('setGlobalLoading', false);
         },
         // 登录的时候存储 用户、菜单、权限
-        storeUserAndMenus(context, {user, menus, rules}) {
+        storeUserAndMenus(context, {user, menus, rules, forbiddenRules}) {
             menus = trimMenuUrlPrefix(menus);
             Lockr.set('user', user);
             Lockr.set('menus', menus);
             Lockr.set('rules', rules);
+            Lockr.set('forbiddenRules', forbiddenRules);
             context.commit('setUser', user);
             context.commit('setMenus', menus);
             context.commit('setRules', rules);
@@ -94,6 +95,7 @@ export default new Vuex.Store({
             Lockr.rm('user');
             Lockr.rm('menus');
             Lockr.rm('rules');
+            Lockr.rm('forbiddenRules');
             context.commit('setUser', null);
             context.commit('setMenus', []);
             context.commit('setRules', []);

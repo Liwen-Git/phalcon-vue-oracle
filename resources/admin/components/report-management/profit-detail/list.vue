@@ -280,7 +280,7 @@
                 }
             },
             exportExcel() {
-                api.post('profit/exportProfitDetail', this.form).then(data => {
+                api.get('profit/exportProfitDetail', this.form).then(data => {
                     window.open(data.list.url);
                 })
             }

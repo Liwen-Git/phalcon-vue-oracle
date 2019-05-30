@@ -4,6 +4,9 @@ import {Message} from "element-ui";
 window.baseApiUrl = window.baseApiUrl || '';
 const CODE_OK = 0;
 const CODE_UN_LOGIN = 10003;
+const CODE_FORBIDDEN = 10010;
+
+let forbiddenRules = Lockr.get('forbiddenRules');
 
 class ResponseError {
     constructor(response) {
@@ -37,6 +40,9 @@ function handleError(error) {
                     store.dispatch('clearUserAndMenus');
                     router.replace('/login');
                     Message.error('您的登录信息已失效, 请先登录');
+                    break;
+                case CODE_FORBIDDEN:
+                    Message.error('没有该操作权限');
                     break;
                 default:
                     console.log('接口返回错误信息:', res);
@@ -82,6 +88,10 @@ function get(url, params, defaultHandlerRes = true) {
         params: params,
     };
     url = getRealUrl(url);
+    if (forbiddenRules.indexOf(url) >= 0) {
+        let res = {code: CODE_FORBIDDEN};
+        return Promise.reject(new ResponseError(res)).catch(handleError);
+    }
     let promise = axios.get(url, options).then(res => {
         let result = res.data;
         if (defaultHandlerRes) {
@@ -107,6 +117,10 @@ function post(url, params, defaultHandlerRes = true) {
         timeout: 1000 * 30,
     };
     url = getRealUrl(url);
+    if (url != '/self/login' && forbiddenRules.indexOf(url) >= 0) {
+        let res = {code: CODE_FORBIDDEN};
+        return handleRes(res).catch(handleError);
+    }
     let promise = axios.post(url, params, options).then(res => {
         let result = res.data;
         if (defaultHandlerRes) {

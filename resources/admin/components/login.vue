@@ -61,6 +61,7 @@
                                 user: data.user,
                                 menus: data.menus,
                                 rules: data.rules,
+                                forbiddenRules: data.forbiddenRules,
                             };
                             this.storeUserAndMenus(res);
                             this.resetTabList();

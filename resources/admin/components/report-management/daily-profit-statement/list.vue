@@ -216,7 +216,7 @@
                 })
             },
             exportExcel() {
-                api.post('profit/exportDailyProfit', this.form).then(data => {
+                api.get('profit/exportDailyProfit', this.form).then(data => {
                     window.open(data.list.url);
                 })
             }

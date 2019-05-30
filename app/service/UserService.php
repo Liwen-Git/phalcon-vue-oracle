@@ -87,9 +87,16 @@ class UserService extends BaseService
             $menuArray[$key]['sub'] = array_values($menuArray[$key]['sub']);
         }
 
+        $allRules = $this->rules;
+        foreach ($rules as $item) {
+            unset($allRules[$item]);
+        }
+        $forbiddenRules = array_values(array_filter($allRules));
+
         return [
             'menuArray' => $menuArray,
             'rules'     => $rules,
+            'forbiddenRules' => $forbiddenRules,
         ];
     }
 

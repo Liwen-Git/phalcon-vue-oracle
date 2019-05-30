@@ -201,7 +201,7 @@
                 }
             },
             exportExcel() {
-                api.post('report_of_agent/exportAgentSettlementReport', this.form).then(data => {
+                api.get('report_of_agent/exportAgentSettlementReport', this.form).then(data => {
                     window.open(data.list.url);
                 })
             },

@@ -288,7 +288,7 @@
                 }
             },
             exportExcel() {
-                api.post('profit/exportAgentProfitDetail', this.form).then(data => {
+                api.get('profit/exportAgentProfitDetail', this.form).then(data => {
                     window.open(data.list.url);
                 })
             }

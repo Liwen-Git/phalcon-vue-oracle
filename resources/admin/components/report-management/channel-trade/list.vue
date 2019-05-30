@@ -202,7 +202,7 @@
                 }
             },
             exportExcel() {
-                api.post('channel/exportChannelTrade', this.form).then(data => {
+                api.get('channel/exportChannelTrade', this.form).then(data => {
                     window.open(data.list.url);
                 })
             },

@@ -28,6 +28,10 @@ $di->setShared('config', function () {
     return include APP_PATH . "/config/config.php";
 });
 
+$di->setShared('rules', function () {
+    return include APP_PATH . "/config/rules.php";
+});
+
 /**
  * The URL component is used to generate all kind of urls in the application
  */

@@ -26,6 +26,7 @@ class SelfController extends ControllerBase
             'user'  => $user,
             'menus' => $menuAndRules['menuArray'],
             'rules' => $menuAndRules['rules'],
+            'forbiddenRules' => $menuAndRules['forbiddenRules'],
         ]);
     }
 
