@@ -4,7 +4,7 @@ import {Message} from "element-ui";
 window.baseApiUrl = window.baseApiUrl || '';
 const CODE_OK = 0;
 const CODE_UN_LOGIN = 10003;
-const CODE_FORBIDDEN = 10010;
+const CODE_FORBIDDEN = 10100;
 
 let forbiddenRules = Lockr.get('forbiddenRules');
 
@@ -90,7 +90,8 @@ function get(url, params, defaultHandlerRes = true) {
     url = getRealUrl(url);
     if (forbiddenRules.indexOf(url) >= 0) {
         let res = {code: CODE_FORBIDDEN};
-        return Promise.reject(new ResponseError(res)).catch(handleError);
+        Message.error('没有该操作权限');
+        return Promise.reject(new ResponseError(res));
     }
     let promise = axios.get(url, options).then(res => {
         let result = res.data;
@@ -119,7 +120,8 @@ function post(url, params, defaultHandlerRes = true) {
     url = getRealUrl(url);
     if (url != '/self/login' && forbiddenRules.indexOf(url) >= 0) {
         let res = {code: CODE_FORBIDDEN};
-        return handleRes(res).catch(handleError);
+        Message.error('没有该操作权限');
+        return Promise.reject(new ResponseError(res));
     }
     let promise = axios.post(url, params, options).then(res => {
         let result = res.data;
