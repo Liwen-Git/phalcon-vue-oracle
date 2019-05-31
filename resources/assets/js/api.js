@@ -6,8 +6,6 @@ const CODE_OK = 0;
 const CODE_UN_LOGIN = 10003;
 const CODE_FORBIDDEN = 10100;
 
-let forbiddenRules = Lockr.get('forbiddenRules');
-
 class ResponseError {
     constructor(response) {
         this.response = response;
@@ -88,6 +86,8 @@ function get(url, params, defaultHandlerRes = true) {
         params: params,
     };
     url = getRealUrl(url);
+
+    let forbiddenRules = Lockr.get('forbiddenRules');
     if (forbiddenRules.indexOf(url) >= 0) {
         let res = {code: CODE_FORBIDDEN};
         Message.error('没有该操作权限');
@@ -118,6 +118,8 @@ function post(url, params, defaultHandlerRes = true) {
         timeout: 1000 * 30,
     };
     url = getRealUrl(url);
+
+    let forbiddenRules = Lockr.get('forbiddenRules');
     if (url != '/self/login' && forbiddenRules.indexOf(url) >= 0) {
         let res = {code: CODE_FORBIDDEN};
         Message.error('没有该操作权限');

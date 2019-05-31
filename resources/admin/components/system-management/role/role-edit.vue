@@ -104,7 +104,7 @@
             this.getActionMenu();
         },
         mounted() {
-            console.log(this.form.actions);
+
         },
         watch: {
             role() {
